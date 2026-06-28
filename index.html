@@ -1544,14 +1544,21 @@
                 canvas.className = 'hero-flow-canvas';
                 hero.prepend(canvas);
 
-                const renderer = new THREE.WebGLRenderer({
-                    canvas,
-                    alpha: true,
-                    antialias: true,
-                    powerPreference: 'high-performance'
-                });
+                let renderer;
+                try {
+                    renderer = new THREE.WebGLRenderer({
+                        canvas,
+                        alpha: true,
+                        antialias: false,
+                        powerPreference: 'low-power'
+                    });
+                } catch (e) {
+                    // WebGL context unavailable (browser limit hit or hardware issue) — skip 3D effect gracefully
+                    canvas.remove();
+                    return;
+                }
                 renderer.setClearColor(0x000000, 0);
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1));
 
                 const scene = new THREE.Scene();
                 const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
