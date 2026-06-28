@@ -214,6 +214,7 @@ const adminHtml = `<!DOCTYPE html>
             <button onclick="switchTab('media')" id="tab-media" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Galeri Media</button>
             <button onclick="switchTab('invoice')" id="tab-invoice" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Invoice TipTop</button>
             <button onclick="switchTab('shipping')" id="tab-shipping" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Kalkulator Shipping</button>
+            <button onclick="switchTab('qrcode')" id="tab-qrcode" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Generator QR Code</button>
         </div>
         <!-- Notification Banner -->
         <div id="toast" class="fixed top-24 right-6 glass-panel text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-[-20px] opacity-0 pointer-events-none z-50">
@@ -353,6 +354,11 @@ const adminHtml = `<!DOCTYPE html>
         <!-- SHIPPING TAB -->
         <section id="sect-shipping" class="hidden space-y-6">
             <iframe src="/shipping" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
+        </section>
+
+        <!-- QRCODE TAB -->
+        <section id="sect-qrcode" class="hidden space-y-6">
+            <iframe src="/qrcode" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
         </section>
     </main>
 
@@ -568,6 +574,7 @@ const adminHtml = `<!DOCTYPE html>
             document.getElementById('sect-media').classList.add('hidden');
             document.getElementById('sect-invoice').classList.add('hidden');
             document.getElementById('sect-shipping').classList.add('hidden');
+            document.getElementById('sect-qrcode').classList.add('hidden');
 
             document.getElementById('sect-' + tabId).classList.remove('hidden');
 
@@ -977,6 +984,16 @@ const server = http.createServer((req, res) => {
         } else {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('shipping_calc.html not found');
+        }
+    } else if (method === 'GET' && (url === '/qrcode' || url === '/qrcode.html')) {
+        // Serve qrcode.html
+        const qrcodeFile = path.join(__dirname, 'qrcode.html');
+        if (fs.existsSync(qrcodeFile)) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end(fs.readFileSync(qrcodeFile, 'utf8'));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('qrcode.html not found');
         }
     } else if (method === 'GET' && url === '/api/shipping/provinces') {
         // RajaOngkir proxy: get provinces

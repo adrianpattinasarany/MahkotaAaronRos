@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator QR Code Gratis - UMKM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            red: '#C1121F', darkred: '#780000',
+                            yellow: '#F2BB05', cream: '#FDF0D5',
+                            dark: '#121212', panel: '#1A1A1A'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- QR Code generator library (pure JS, no server needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <style>
+        body { background-color: transparent; color: #FDF0D5; }
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .tab-active { background: #C1121F; color: white; }
+        .tab-inactive { background: rgba(255,255,255,0.05); color: #9ca3af; }
+        .tab-inactive:hover { background: rgba(255,255,255,0.1); color: white; }
+        #qr-canvas { image-rendering: pixelated; }
+    </style>
+</head>
+<body class="font-sans p-2">
+
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="glass-panel p-6 rounded-3xl space-y-6">
+
+        <!-- Header -->
+        <div class="flex items-center space-x-3 border-b border-white/5 pb-4">
+            <span class="text-2xl">📱</span>
+            <div>
+                <h2 class="text-xl font-extrabold text-brand-yellow">Generator QR Code Gratis</h2>
+                <p class="text-xs text-gray-400 font-semibold tracking-wider uppercase">Buat QR Code instan untuk WhatsApp, Website, Teks — Unduh PNG</p>
+            </div>
+        </div>
+
+        <!-- Preset Tabs -->
+        <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3">1. Pilih Jenis QR Code</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button onclick="switchTab('whatsapp')" id="tab-whatsapp"
+                    class="tab-active px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center space-y-1">
+                    <span class="text-lg">💬</span><span>WhatsApp</span>
+                </button>
+                <button onclick="switchTab('website')" id="tab-website"
+                    class="tab-inactive px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center space-y-1">
+                    <span class="text-lg">🌐</span><span>Website / Link</span>
+                </button>
+                <button onclick="switchTab('teks')" id="tab-teks"
+                    class="tab-inactive px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center space-y-1">
+                    <span class="text-lg">📝</span><span>Teks / Info</span>
+                </button>
+                <button onclick="switchTab('email')" id="tab-email"
+                    class="tab-inactive px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center space-y-1">
+                    <span class="text-lg">📧</span><span>Email</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Input Forms -->
+        <div class="space-y-4">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">2. Isi Detail</h3>
+
+            <!-- WhatsApp Form -->
+            <div id="form-whatsapp" class="space-y-3">
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Nomor WhatsApp (Format: 628xxx)</label>
+                        <input type="tel" id="wa-number" placeholder="Contoh: 628118776635"
+                            class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white"
+                            oninput="generateQR()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Pesan Awal (Opsional)</label>
+                        <input type="text" id="wa-message" placeholder="Halo, saya mau tanya produk..."
+                            class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white"
+                            oninput="generateQR()">
+                    </div>
+                </div>
+                <div class="bg-brand-yellow/10 border border-brand-yellow/20 rounded-xl p-3 text-xs text-gray-300 flex items-start space-x-2">
+                    <span>💡</span>
+                    <p>QR Code ini bisa ditempel di kemasan, brosur, atau stan pameran agar pelanggan langsung chat WhatsApp Anda.</p>
+                </div>
+            </div>
+
+            <!-- Website Form -->
+            <div id="form-website" class="hidden space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">URL Website / Link</label>
+                    <input type="url" id="web-url" placeholder="https://example.com atau https://linktr.ee/namausaha"
+                        class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white"
+                        oninput="generateQR()">
+                </div>
+                <div class="bg-brand-yellow/10 border border-brand-yellow/20 rounded-xl p-3 text-xs text-gray-300 flex items-start space-x-2">
+                    <span>💡</span>
+                    <p>Gunakan Linktree (linktr.ee) untuk menggabungkan semua link UMKM Anda (WA, Tokopedia, Instagram) dalam satu QR Code.</p>
+                </div>
+            </div>
+
+            <!-- Teks Form -->
+            <div id="form-teks" class="hidden space-y-3">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Teks / Informasi Produk</label>
+                    <textarea id="teks-content" rows="4" placeholder="Contoh:&#10;Mahkota Aaronros&#10;Kering Kentang Mustofa Premium&#10;Bahan: Kentang, Cabai, Garam, Gula&#10;No. PIRT: 123456789&#10;Exp: Lihat kemasan"
+                        class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white resize-none"
+                        oninput="generateQR()"></textarea>
+                </div>
+            </div>
+
+            <!-- Email Form -->
+            <div id="form-email" class="hidden space-y-3">
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Alamat Email</label>
+                        <input type="email" id="email-address" placeholder="usaha@email.com"
+                            class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white"
+                            oninput="generateQR()">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Subjek Email (Opsional)</label>
+                        <input type="text" id="email-subject" placeholder="Pertanyaan Produk Mahkota"
+                            class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white"
+                            oninput="generateQR()">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customization -->
+        <div class="space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">3. Kustomisasi (Opsional)</h3>
+            <div class="grid sm:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Ukuran (px)</label>
+                    <select id="qr-size" class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white" onchange="generateQR()">
+                        <option value="200">Kecil (200×200)</option>
+                        <option value="300" selected>Sedang (300×300)</option>
+                        <option value="400">Besar (400×400)</option>
+                        <option value="600">Print Ready (600×600)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Warna QR</label>
+                    <input type="color" id="qr-dark-color" value="#000000"
+                        class="w-full h-11 bg-[#222] border border-white/10 rounded-xl focus:outline-none cursor-pointer px-2"
+                        onchange="generateQR()">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Warna Background</label>
+                    <input type="color" id="qr-light-color" value="#ffffff"
+                        class="w-full h-11 bg-[#222] border border-white/10 rounded-xl focus:outline-none cursor-pointer px-2"
+                        onchange="generateQR()">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-1.5">Label Teks di Bawah QR (Opsional)</label>
+                <input type="text" id="qr-label" placeholder="Contoh: Scan untuk Order via WhatsApp"
+                    class="w-full bg-[#222] border border-white/10 px-3 py-2.5 rounded-xl text-sm focus:outline-none focus:border-brand-yellow text-white"
+                    oninput="generateQR()">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Result Panel -->
+    <div class="glass-panel p-6 rounded-3xl space-y-5">
+        <h3 class="text-sm font-black uppercase tracking-widest text-brand-yellow border-b border-white/5 pb-2">Hasil QR Code</h3>
+
+        <!-- QR Preview Area -->
+        <div class="flex flex-col items-center space-y-4">
+            <div id="qr-wrapper" class="relative bg-white p-4 rounded-2xl shadow-xl inline-block">
+                <canvas id="qr-canvas"></canvas>
+                <p id="qr-label-display" class="text-center text-xs font-bold text-gray-700 mt-2 max-w-[280px] hidden"></p>
+            </div>
+            <p id="qr-placeholder" class="text-gray-400 italic text-sm py-8">Isi form di atas untuk membuat QR Code.</p>
+        </div>
+
+        <!-- Error Message -->
+        <div id="qr-error" class="hidden bg-red-950/50 border border-red-800/50 rounded-xl p-3 text-xs text-red-400"></div>
+
+        <!-- Download Button -->
+        <div id="qr-actions" class="hidden grid sm:grid-cols-2 gap-3">
+            <button onclick="downloadQR('png')"
+                class="py-3 rounded-xl font-bold text-sm text-black bg-brand-yellow hover:bg-yellow-500 transition-all flex items-center justify-center space-x-2 shadow-lg hover:scale-[1.02]">
+                <span>⬇️ Unduh PNG</span>
+            </button>
+            <button onclick="copyQRData()"
+                class="py-3 rounded-xl font-bold text-sm border border-white/15 hover:bg-white/5 transition-all flex items-center justify-center space-x-2">
+                <span>📋 Salin Data QR</span>
+            </button>
+        </div>
+
+        <!-- Info Box -->
+        <div class="bg-white/5 border border-white/5 rounded-xl p-4 text-xs text-gray-400 space-y-1">
+            <p class="text-brand-yellow font-bold text-[10px] uppercase tracking-wider">ℹ️ Tips Penggunaan</p>
+            <ul class="space-y-1 list-disc list-inside">
+                <li>Pilih ukuran <strong class="text-white">Print Ready (600×600)</strong> untuk dicetak di kemasan atau brosur</li>
+                <li>QR Code WhatsApp memudahkan pelanggan langsung chat tanpa mengetik nomor</li>
+                <li>Semua proses dilakukan di browser Anda — data tidak dikirim ke server manapun</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentTab = 'whatsapp';
+    let currentQRData = '';
+
+    function switchTab(tab) {
+        // Update tab buttons
+        ['whatsapp', 'website', 'teks', 'email'].forEach(t => {
+            const btn = document.getElementById('tab-' + t);
+            const form = document.getElementById('form-' + t);
+            btn.className = (t === tab ? 'tab-active' : 'tab-inactive') +
+                ' px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex flex-col items-center space-y-1';
+            form.classList.toggle('hidden', t !== tab);
+        });
+        currentTab = tab;
+        generateQR();
+    }
+
+    function getQRData() {
+        switch (currentTab) {
+            case 'whatsapp': {
+                const num = (document.getElementById('wa-number').value || '').trim().replace(/\D/g, '');
+                const msg = (document.getElementById('wa-message').value || '').trim();
+                if (!num) return '';
+                return msg
+                    ? `https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`
+                    : `https://api.whatsapp.com/send?phone=${num}`;
+            }
+            case 'website': {
+                const url = (document.getElementById('web-url').value || '').trim();
+                return url || '';
+            }
+            case 'teks': {
+                return (document.getElementById('teks-content').value || '').trim();
+            }
+            case 'email': {
+                const addr = (document.getElementById('email-address').value || '').trim();
+                const subj = (document.getElementById('email-subject').value || '').trim();
+                if (!addr) return '';
+                return subj ? `mailto:${addr}?subject=${encodeURIComponent(subj)}` : `mailto:${addr}`;
+            }
+        }
+        return '';
+    }
+
+    function generateQR() {
+        const data = getQRData();
+        const canvas = document.getElementById('qr-canvas');
+        const wrapper = document.getElementById('qr-wrapper');
+        const placeholder = document.getElementById('qr-placeholder');
+        const actions = document.getElementById('qr-actions');
+        const errorEl = document.getElementById('qr-error');
+        const labelDisplay = document.getElementById('qr-label-display');
+        const label = (document.getElementById('qr-label').value || '').trim();
+        const size = parseInt(document.getElementById('qr-size').value) || 300;
+        const darkColor = document.getElementById('qr-dark-color').value;
+        const lightColor = document.getElementById('qr-light-color').value;
+
+        errorEl.classList.add('hidden');
+
+        if (!data) {
+            canvas.style.display = 'none';
+            wrapper.style.display = 'none';
+            placeholder.style.display = 'block';
+            actions.classList.add('hidden');
+            return;
+        }
+
+        currentQRData = data;
+
+        QRCode.toCanvas(canvas, data, {
+            width: size,
+            margin: 2,
+            color: { dark: darkColor, light: lightColor }
+        }, (err) => {
+            if (err) {
+                errorEl.textContent = 'Gagal membuat QR Code: ' + err.message + '. Data terlalu panjang atau tidak valid.';
+                errorEl.classList.remove('hidden');
+                canvas.style.display = 'none';
+                wrapper.style.display = 'none';
+                placeholder.style.display = 'block';
+                actions.classList.add('hidden');
+                return;
+            }
+
+            canvas.style.display = 'block';
+            wrapper.style.display = 'inline-block';
+            placeholder.style.display = 'none';
+            actions.classList.remove('hidden');
+
+            if (label) {
+                labelDisplay.textContent = label;
+                labelDisplay.classList.remove('hidden');
+            } else {
+                labelDisplay.classList.add('hidden');
+            }
+        });
+    }
+
+    function downloadQR(format) {
+        const canvas = document.getElementById('qr-canvas');
+        const label = (document.getElementById('qr-label').value || '').trim();
+
+        // Create combined canvas if label exists
+        const exportCanvas = document.createElement('canvas');
+        const padding = 24;
+        const labelHeight = label ? 40 : 0;
+        exportCanvas.width = canvas.width + padding * 2;
+        exportCanvas.height = canvas.height + padding * 2 + labelHeight;
+
+        const ctx = exportCanvas.getContext('2d');
+        const bgColor = document.getElementById('qr-light-color').value;
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+        ctx.drawImage(canvas, padding, padding);
+
+        if (label) {
+            ctx.fillStyle = '#333333';
+            ctx.font = 'bold 16px Outfit, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, exportCanvas.width / 2, canvas.height + padding + 28);
+        }
+
+        const link = document.createElement('a');
+        link.download = 'qrcode-mahkota-' + currentTab + '.png';
+        link.href = exportCanvas.toDataURL('image/png');
+        link.click();
+    }
+
+    function copyQRData() {
+        if (!currentQRData) return;
+        navigator.clipboard.writeText(currentQRData).then(() => {
+            const btn = document.querySelector('[onclick="copyQRData()"]');
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<span>✅ Tersalin!</span>';
+            setTimeout(() => { btn.innerHTML = orig; }, 2000);
+        });
+    }
+
+    // Init: set default WA number from Mahkota config if available
+    window.addEventListener('DOMContentLoaded', () => {
+        try {
+            if (typeof mahkotaConfig !== 'undefined' && mahkotaConfig.waNumber) {
+                document.getElementById('wa-number').value = mahkotaConfig.waNumber;
+                document.getElementById('wa-message').value = 'Halo Admin Mahkota Aaronros, saya ingin bertanya tentang produk...';
+            }
+        } catch(e) {}
+        generateQR();
+    });
+</script>
+
+</body>
+</html>
