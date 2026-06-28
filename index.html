@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="theme-color" content="#C1121F">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mahkota Aaronros">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Mahkota Aaronros - Kuliner Halal Premium Tangerang Selatan</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#C1121F',      /* Premium Crimson Red */
+                            darkred: '#780000',  /* Deep Marone */
+                            yellow: '#F2BB05',  /* Golden Yellow Accent */
+                            cream: '#FDF0D5',   /* Soft Cream Background */
+                            dark: '#1E1E1E'     /* Elegant Dark */
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom red-yellow geometric wave background pattern matching the packaging */
+        .brand-pattern {
+            background-color: #C1121F;
+            background-image: radial-gradient(rgba(242, 187, 5, 0.15) 1px, transparent 0),
+                              radial-gradient(rgba(242, 187, 5, 0.15) 1px, transparent 0);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #780000 0%, #C1121F 50%, #C1121F 100%);
+        }
+
+        /* Google Sites iframe-safe containment and animation helpers */
+        #beranda,
+        #tentang,
+        #mesin,
+        #produk,
+        #pesan,
+        #legalitas {
+            position: relative;
+            isolation: isolate;
+            contain: layout paint;
+        }
+
+        .hero-flow-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.9;
+            mix-blend-mode: screen;
+        }
+
+        #beranda > .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .floating-glow {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 9999px;
+            pointer-events: none;
+            filter: blur(20px);
+            opacity: 0.35;
+            z-index: 0;
+            background: radial-gradient(circle, rgba(242, 187, 5, 0.45), rgba(242, 187, 5, 0));
+        }
+
+        .anim-fade-up {
+            opacity: 0;
+            transform: translateY(18px) scale(0.985);
+            transition: opacity 700ms ease, transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: transform, opacity;
+        }
+
+        .anim-fade-up.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .route-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .machine-particle-layer,
+        .product-particle-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .machine-particle,
+        .product-particle {
+            position: absolute;
+            border-radius: 9999px;
+            will-change: transform;
+            filter: blur(1px);
+        }
+
+        @media (max-width: 767px), (prefers-reduced-motion: reduce) {
+            .hero-flow-canvas {
+                display: none;
+            }
+        }
+
+        /* Mobile-specific improvements */
+        @media (max-width: 767px) {
+            /* Ensure proper spacing for touch targets */
+            button, a, input, textarea, select {
+                min-height: 44px;
+            }
+
+            /* Improve form input sizing */
+            input, textarea, select {
+                font-size: 16px !important; /* Prevents zoom on iOS */
+                padding: 12px 16px;
+            }
+
+            /* Scrollable filter buttons */
+            .prod-filter-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                flex-wrap: nowrap;
+                padding-bottom: 8px;
+            }
+            .prod-filter-scroll::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Fix sticky sidebar on mobile */
+            .lg\:sticky {
+                position: relative !important;
+                top: auto !important;
+            }
+
+            /* Reduce hero section padding on mobile */
+            #beranda {
+                min-height: 75vh;
+            }
+
+            /* Improve card spacing on mobile */
+            .prod-card, .machine-card {
+                margin-bottom: 16px;
+            }
+
+            /* Better touch feedback */
+            .city-btn, .prod-filter-btn {
+                min-width: 44px;
+                min-height: 44px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Improve mobile menu touch targets */
+            #mobile-menu a {
+                padding: 14px 16px;
+                min-height: 48px;
+                display: flex;
+                align-items: center;
+            }
+
+            /* WhatsApp button larger on mobile */
+            .wa-order-btn {
+                padding: 18px 24px;
+                font-size: 18px;
+            }
+
+            /* Ensure proper bottom spacing for mobile navigation */
+            .fixed-bottom-mobile {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 50;
+                background: white;
+                padding: 12px 16px;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            }
+
+            /* Safe area padding for notched devices */
+            .safe-area-bottom {
+                padding-bottom: calc(16px + env(safe-area-inset-bottom));
+            }
+            .safe-area-top {
+                padding-top: env(safe-area-inset-top);
+            }
+        }
+
+        /* Touch optimization for all devices */
+        * {
+            -webkit-tap-highlight-color: rgba(193, 18, 31, 0.2);
+        }
+
+        /* Smooth scrolling on iOS */
+        html {
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+</head>
+<body class="bg-brand-cream text-brand-dark font-sans antialiased iframe-safe">
+
+    <!-- NAVIGATION HEADER -->
+    <header class="sticky top-0 z-50 bg-white/95 backdrop-blur shadow-md transition-all duration-300 safe-area-top">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Brand Name -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <!-- SVG Mahkota Logo (Red Crown with 5 Forks) -->
+                    <svg class="w-12 h-12 text-brand-red" viewBox="0 0 100 100" fill="currentColor">
+                        <!-- Crown Base -->
+                        <path d="M15,75 L85,75 L80,85 L20,85 Z" fill="#C1121F" />
+                        <!-- Crown Inner Gold Band -->
+                        <path d="M22,77 L78,77 L76,81 L24,81 Z" fill="#F2BB05" />
+                        <!-- 5 Forks/Prongs -->
+                        <!-- Prong 1 (Left) -->
+                        <path d="M15,75 L12,40 L16,40 L18,70 Z" fill="#C1121F" />
+                        <circle cx="14" cy="38" r="4" fill="#C1121F" />
+                        <!-- Prong 2 -->
+                        <path d="M32,75 L28,30 L32,30 L34,70 Z" fill="#C1121F" />
+                        <circle cx="30" cy="28" r="4" fill="#C1121F" />
+                        <!-- Prong 3 (Center) -->
+                        <path d="M50,75 L50,22 L47,26 L47,22 L53,22 L53,26 L50,75 Z" fill="#C1121F" />
+                        <circle cx="50" cy="18" r="5" fill="#F2BB05" />
+                        <!-- Prong 4 -->
+                        <path d="M68,75 L72,30 L68,30 L66,70 Z" fill="#C1121F" />
+                        <circle cx="70" cy="28" r="4" fill="#C1121F" />
+                        <!-- Prong 5 (Right) -->
+                        <path d="M85,75 L88,40 L84,40 L82,70 Z" fill="#C1121F" />
+                        <circle cx="86" cy="38" r="4" fill="#C1121F" />
+                        <!-- Small details -->
+                        <rect x="42" y="80" width="16" height="3" fill="#F2BB05" rx="1.5"/>
+                    </svg>
+                    <div>
+                        <span class="block text-xl font-black tracking-wider text-brand-red">MAHKOTA</span>
+                        <span class="block text-xs font-semibold uppercase tracking-widest text-gray-500">Aaronros</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#beranda" class="font-medium text-gray-700 hover:text-brand-red transition-colors">Beranda</a>
+                    <a href="#tentang" class="font-medium text-gray-700 hover:text-brand-red transition-colors">Kisah Kami</a>
+                    <a href="#produk" class="font-medium text-gray-700 hover:text-brand-red transition-colors">Produk</a>
+                    <a href="#galeri" class="font-medium text-gray-700 hover:text-brand-red transition-colors">Galeri</a>
+                    <a href="#pesan" class="font-medium text-gray-700 hover:text-brand-red transition-colors">Pesan Cepat</a>
+                    <a href="#legalitas" class="font-medium text-gray-700 hover:text-brand-red transition-colors">Sertifikasi</a>
+                    <a href="#pesan" class="bg-brand-red hover:bg-brand-darkred text-white px-5 py-2.5 rounded-full font-semibold transition-all shadow hover:shadow-lg">
+                        Pesan Sekarang
+                    </a>
+                </nav>
+ 
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" aria-label="Buka menu navigasi" aria-expanded="false" class="p-3 rounded-lg text-brand-red focus:outline-none focus:ring-2 focus:ring-brand-yellow" style="min-width: 48px; min-height: 48px;">
+                        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+ 
+        <!-- Mobile Nav Menu Drawer -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 transition-all duration-300">
+            <div class="px-4 pt-2 pb-6 space-y-3">
+                <a href="#beranda" class="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-brand-cream hover:text-brand-red">Beranda</a>
+                <a href="#tentang" class="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-brand-cream hover:text-brand-red">Kisah Kami</a>
+                <a href="#produk" class="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-brand-cream hover:text-brand-red">Produk</a>
+                <a href="#galeri" class="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-brand-cream hover:text-brand-red">Galeri</a>
+                <a href="#pesan" class="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-brand-cream hover:text-brand-red">Pesan Cepat</a>
+                <a href="#legalitas" class="block px-3 py-2 rounded-md font-medium text-gray-700 hover:bg-brand-cream hover:text-brand-red">Sertifikasi</a>
+                <a href="#pesan" class="block w-full text-center bg-brand-red text-white py-3 rounded-full font-bold">Pesan Sekarang</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="beranda" class="hero-gradient relative overflow-hidden text-white min-h-[85vh] flex items-center">
+        <!-- SVG Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10 brand-pattern"></div>
+        
+        <!-- Wave Divider Bottom -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg class="w-full h-12 md:h-24 fill-current text-brand-cream" viewBox="0 0 1440 74" preserveAspectRatio="none">
+                <path d="M0,32 C240,70 480,70 720,48 C960,26 1200,-18 1440,8 L1440,74 L0,74 Z"></path>
+            </svg>
+        </div>
+
+        <div class="hero-content relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 grid md:grid-cols-12 gap-12 items-center">
+            <!-- Left Headline Text -->
+            <div class="md:col-span-7 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-brand-yellow/20 border border-brand-yellow/30 text-brand-yellow px-4 py-1.5 rounded-full text-sm font-bold tracking-wide">
+                    <span>👑 UKM Halal Unggulan Kota Tangerang Selatan</span>
+                </div>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+                    Cita Rasa Istimewa, <br class="hidden sm:inline">
+                    <span class="text-brand-yellow">Keluarga Mahkota</span> Pilihan Anda.
+                </h1>
+                <p class="text-lg text-white/90 leading-relaxed max-w-xl">
+                    Dari resep rahasia keluarga, menghadirkan Kering Kentang Mustofa yang renyah tahan lama, Sambal Botol super nikmat, hingga Nastar legendaris yang higienis & 100% tersertifikasi Halal MUI.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                    <a href="#produk" class="bg-brand-yellow hover:bg-yellow-500 text-brand-dark px-8 py-4 rounded-full font-extrabold text-lg text-center transition-all shadow-lg hover:scale-105">
+                        Lihat Produk Pilihan
+                    </a>
+                    <a href="#tentang" class="border-2 border-white/80 hover:border-white hover:bg-white/10 text-white px-8 py-4 rounded-full font-bold text-lg text-center transition-all">
+                        Kisah Ibu Rosniati, ST
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Hero Interactive Graphics / Feature Showcase -->
+            <div class="md:col-span-5 relative flex justify-center">
+                <!-- Golden ring glow behind product shapes -->
+                <div class="absolute w-72 h-72 rounded-full bg-brand-yellow/20 blur-3xl animate-pulse"></div>
+                
+                <div class="relative bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 shadow-2xl max-w-sm w-full">
+                    <div class="text-center pb-4 border-b border-white/10">
+                        <span class="text-sm font-bold uppercase tracking-widest text-brand-yellow">Best Seller Minggu Ini</span>
+                    </div>
+                    <!-- Product Spotlight: Kering Kentang Mustofa -->
+                    <div class="my-6 flex flex-col items-center">
+                        <!-- Premium Red Pouch SVG Representation -->
+                        <svg class="w-40 h-52 drop-shadow-2xl" viewBox="0 0 100 130">
+                            <!-- Pouch Shape -->
+                            <path d="M15,10 C35,12 65,12 85,10 L82,115 C82,122 72,125 50,125 C28,125 18,122 18,115 Z" fill="#C1121F" />
+                            <!-- Pouch Zip/Seam Details -->
+                            <path d="M15,18 L85,18 L84,20 L16,20 Z" fill="#780000" />
+                            <circle cx="80" cy="14" r="1.5" fill="#F2BB05" />
+                            <!-- Lower Yellow/Gold Band -->
+                            <path d="M18,95 C30,105 70,105 82,95 L82,115 C82,122 72,125 50,125 C28,125 18,122 18,115 Z" fill="#F2BB05" />
+                            <!-- Red Crown Logo on Pouch -->
+                            <g transform="translate(42, 28) scale(0.16)">
+                                <path d="M15,75 L85,75 L80,85 L20,85 Z" fill="#FFFFFF" />
+                                <path d="M15,75 L12,40 L16,40 L18,70 Z" fill="#FFFFFF" />
+                                <path d="M32,75 L28,30 L32,30 L34,70 Z" fill="#FFFFFF" />
+                                <path d="M50,75 L50,18 L53,22 L47,22 Z" fill="#FFFFFF" />
+                                <path d="M68,75 L72,30 L68,30 L66,70 Z" fill="#FFFFFF" />
+                                <path d="M85,75 L88,40 L84,40 L82,70 Z" fill="#FFFFFF" />
+                            </g>
+                            <!-- Pouch Main Text -->
+                            <text x="50" y="58" font-family="sans-serif" font-weight="900" font-size="7" fill="#F2BB05" text-anchor="middle" letter-spacing="1">KENTANG</text>
+                            <text x="50" y="68" font-family="sans-serif" font-weight="950" font-size="11" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">MUSTOFA</text>
+                            <text x="50" y="76" font-family="sans-serif" font-weight="500" font-size="4" fill="#FFFFFF" text-anchor="middle" opacity="0.9">Kering Kentang Pengganti Lauk</text>
+                            <!-- Halal Seal Symbol -->
+                            <circle cx="28" cy="110" r="5" fill="#FFFFFF" />
+                            <text x="28" y="112" font-family="sans-serif" font-weight="bold" font-size="4" fill="#008000" text-anchor="middle">حلال</text>
+                            <!-- Netto Badge -->
+                            <rect x="58" y="105" width="18" height="8" rx="2" fill="#780000" />
+                            <text x="67" y="111" font-family="sans-serif" font-weight="bold" font-size="5" fill="#FFFFFF" text-anchor="middle">150g</text>
+                        </svg>
+                        <h3 class="text-xl font-extrabold mt-4 text-white">Mustofa Premium Original</h3>
+                        <p class="text-sm text-brand-yellow font-semibold">100% Kentang Segar Pilihan</p>
+                    </div>
+                    <div class="flex items-center justify-between text-xs bg-black/25 px-4 py-2.5 rounded-xl">
+                        <span class="flex items-center"><span class="w-2.5 h-2.5 bg-green-500 rounded-full mr-2 animate-ping"></span> Stok Siap Kirim</span>
+                        <span class="font-bold text-brand-yellow">P-IRT & Halal Terdaftar</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KEY STATS SECTION -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+        <div class="bg-white rounded-2xl shadow-xl grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-100 text-center p-6 md:p-8">
+            <div class="p-4">
+                <span class="block text-3xl md:text-4xl font-extrabold text-brand-red">2017</span>
+                <span class="text-sm font-semibold text-gray-500 uppercase">Sejak Berdiri</span>
+            </div>
+            <div class="p-4">
+                <span class="block text-3xl md:text-4xl font-extrabold text-brand-red">100%</span>
+                <span class="text-sm font-semibold text-gray-500 uppercase">Halal MUI Resmi</span>
+            </div>
+            <div class="p-4">
+                <span class="block text-3xl md:text-4xl font-extrabold text-brand-red">12+</span>
+                <span class="text-sm font-semibold text-gray-500 uppercase">Ritel Ternama</span>
+            </div>
+            <div class="p-4">
+                <span class="block text-3xl md:text-4xl font-extrabold text-brand-red">5-⭐️</span>
+                <span class="text-sm font-semibold text-gray-500 uppercase">Peringkat Kepuasan</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- KISAH KAMI (ABOUT THE FOUNDER) -->
+    <section id="tentang" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+            <!-- Left Text Content -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center space-x-2 text-brand-red font-bold text-sm tracking-wider uppercase">
+                    <span class="h-px w-8 bg-brand-red"></span>
+                    <span>Profil Pendiri</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">
+                    Ibu Rosniati, ST <span class="text-brand-red font-light text-2xl block mt-1">Sinergi Keilmuan Teknik Kimia & Kecintaan Kuliner</span>
+                </h2>
+                
+                <p class="text-gray-700 leading-relaxed">
+                    Lahir di Pulau Kijang, Riau, pada Maret 1976 dari pasangan pendidik tangguh asal Sulawesi Selatan, Alm. H. Passak dan Almh. Hj. Amang. Beliau tumbuh dalam keluarga besar berkelimpahan nilai disiplin bersama 11 saudara kandungnya. 
+                </p>
+                
+                <p class="text-gray-700 leading-relaxed">
+                    Berbekal gelar **Sarjana Teknik Kimia dari Universitas Riau** dan pengalaman magang profesional di PT Sucofindo, Ibu Rosniati menerapkan standar presisi formulasi kimia dalam dunia memasak pangan. Setiap takaran, tingkat pengeringan, serta keseimbangan pH bumbu dikontrol secara akurat untuk menghasilkan kerenyahan mustofa dan ketahanan sambal alami yang sempurna.
+                </p>
+
+                <!-- Interactive Travel Steps Display -->
+                <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+                    <h4 class="font-bold text-brand-red text-md">🗺️ Perjalanan Inspirasi Rasa Ibu Rosniati</h4>
+                    <p class="text-xs text-gray-500">Klik setiap kota untuk mempelajari bekal resep yang didapatkan oleh Ibu Rosniati sepanjang mendampingi pendidikan tinggi suami:</p>
+                    
+                    <!-- Cities Carousel / Selector -->
+                    <div class="flex flex-wrap gap-2 pt-2">
+                        <button onclick="showCityDetail('pekanbaru')" id="btn-pekanbaru" class="city-btn px-4 py-2 text-xs font-bold rounded-full bg-brand-red text-white transition-all">Pekanbaru & Duri</button>
+                        <button onclick="showCityDetail('batam')" id="btn-batam" class="city-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-200 text-gray-700 hover:bg-brand-red hover:text-white transition-all">Batam</button>
+                        <button onclick="showCityDetail('malaysia')" id="btn-malaysia" class="city-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-200 text-gray-700 hover:bg-brand-red hover:text-white transition-all">Ipoh (Malaysia)</button>
+                        <button onclick="showCityDetail('jakarta')" id="btn-jakarta" class="city-btn px-4 py-2 text-xs font-bold rounded-full bg-gray-200 text-gray-700 hover:bg-brand-red hover:text-white transition-all">Jakarta & Tangsel</button>
+                    </div>
+
+                    <!-- City Description Box -->
+                    <div class="bg-brand-cream/40 p-4 rounded-xl border border-brand-yellow/30 mt-3 min-h-[90px]">
+                        <p id="city-text" class="text-sm text-gray-700 font-medium leading-relaxed">
+                            Di Pekanbaru dan Duri (Riau), Ibu Rosniati mendalami bumbu rempah dasar Sumatra, termasuk teknik pengawetan kering kentang balado karamel legendaris yang manis gurih tanpa pemanis buatan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Visual (Creative Family Crown Concept) -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 relative">
+                    <!-- Brand pattern decorative box -->
+                    <div class="absolute -top-3 -right-3 w-16 h-16 brand-pattern rounded-2xl -z-10 opacity-30"></div>
+                    <div class="absolute -bottom-3 -left-3 w-16 h-16 brand-pattern rounded-2xl -z-10 opacity-30"></div>
+
+                    <h3 class="text-xl font-extrabold text-brand-red border-b pb-4 mb-4 flex items-center">
+                        👨‍👩‍👧‍👦 Filosofi Keluarga Mahkota
+                    </h3>
+                    <div class="space-y-4">
+                        <p class="text-sm text-gray-600 leading-relaxed">
+                            Logo Mahkota berwarna merah dengan **5 garpu** melambangkan ikatan kekeluargaan kokoh kami yang beranggotakan **5 orang sekeluarga**. Kami berkomitmen penuh menyajikan makanan berkualitas layaknya menyajikannya untuk keluarga kami sendiri di meja makan.
+                        </p>
+                        <!-- Interactive Family representation -->
+                        <div class="grid grid-cols-5 gap-2 text-center pt-2">
+                            <div class="p-2.5 bg-brand-cream rounded-xl border border-brand-yellow/30">
+                                <span class="block text-2xl">👨</span>
+                                <span class="text-[10px] font-bold text-brand-dark">Suami</span>
+                            </div>
+                            <div class="p-2.5 bg-brand-red text-white rounded-xl">
+                                <span class="block text-2xl">👩</span>
+                                <span class="text-[10px] font-bold">Ibu (ST)</span>
+                            </div>
+                            <div class="p-2.5 bg-brand-cream rounded-xl border border-brand-yellow/30">
+                                <span class="block text-2xl">🧑</span>
+                                <span class="text-[10px] font-bold text-brand-dark">Anak 1</span>
+                            </div>
+                            <div class="p-2.5 bg-brand-cream rounded-xl border border-brand-yellow/30">
+                                <span class="block text-2xl">👧</span>
+                                <span class="text-[10px] font-bold text-brand-dark">Anak 2</span>
+                            </div>
+                            <div class="p-2.5 bg-brand-cream rounded-xl border border-brand-yellow/30">
+                                <span class="block text-2xl">👶</span>
+                                <span class="text-[10px] font-bold text-brand-dark">Anak 3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Values Cards -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-brand-red/5 p-4 rounded-2xl border border-brand-red/10">
+                        <span class="text-2xl">🛡️</span>
+                        <h4 class="font-bold text-brand-red mt-2">Higienitas Kimia</h4>
+                        <p class="text-xs text-gray-600 mt-1">Formulasi bahan baku steril berbasis kaidah teknologi kimia industri pangan.</p>
+                    </div>
+                    <div class="bg-brand-yellow/10 p-4 rounded-2xl border border-brand-yellow/20">
+                        <span class="text-2xl">🌾</span>
+                        <h4 class="font-bold text-brand-dark mt-2">Bahan Alami</h4>
+                        <p class="text-xs text-gray-600 mt-1">Menggunakan kentang premium segar, cabai murni asli, tanpa pengawet.</p>
+                    </div>
+                </div>
+
+                <!-- Showcase Grid (Image & Video) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Raw Ingredients Showcase -->
+                    <div class="bg-white p-3 rounded-2xl shadow-md border border-gray-100 overflow-hidden relative group flex flex-col justify-between">
+                        <div class="aspect-[3/4] w-full overflow-hidden rounded-xl bg-black/10 relative">
+                            <img src="gambar/20220915_192909.jpg" alt="Bahan Baku Cabai Segar Mahkota Aaronros" class="object-cover w-full h-full group-hover:scale-105 transition-all duration-500">
+                            <div class="absolute top-2 right-2 bg-brand-yellow text-brand-dark font-extrabold text-[8px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow">100% Segar</div>
+                        </div>
+                        <div class="mt-2.5">
+                            <span class="text-brand-yellow font-black text-xs uppercase tracking-wider block">Bahan Baku Pilihan</span>
+                            <span class="text-gray-500 text-[11px] font-medium block leading-tight">Cabai & rempah lokal segar tanpa pengawet.</span>
+                        </div>
+                    </div>
+
+                    <!-- Cooking Video Showcase -->
+                    <div class="bg-white p-3 rounded-2xl shadow-md border border-gray-100 overflow-hidden relative group flex flex-col justify-between">
+                        <div class="aspect-[3/4] w-full overflow-hidden rounded-xl bg-black relative">
+                            <video src="gambar/2022-08-01-214853258.mp4" class="object-cover w-full h-full" controls muted loop playsinline></video>
+                            <div class="absolute top-2 right-2 bg-brand-red text-white font-extrabold text-[8px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow">Dapur Mahkota</div>
+                        </div>
+                        <div class="mt-2.5">
+                            <span class="text-brand-red font-black text-xs uppercase tracking-wider block">Kenikmatan Autentik</span>
+                            <span class="text-gray-500 text-[11px] font-medium block leading-tight">Kelezatan Sambal Mahkota yang disukai seluruh anggota keluarga.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INOVASI ALAT PRODUK (INTERACTIVE MACHINE SECTION) -->
+    <section id="mesin" class="bg-brand-red py-20 text-white relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 brand-pattern"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                <span class="text-brand-yellow font-extrabold uppercase tracking-widest text-sm">Rencana Inovasi & Modernisasi</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold">Mesin & Alat Produksi Berteknologi Tinggi</h2>
+                <p class="text-white/80">
+                    Untuk menjamin rasa autentik tradisional dan kerenyahan optimal dalam skala ritel ekspor, kami menerapkan standardisasi alat pengolahan terkini.
+                </p>
+            </div>
+
+            <!-- Horizontal Machine Cards Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Machine 1 -->
+                <div class="machine-card bg-white/10 backdrop-blur border border-white/15 p-6 rounded-2xl space-y-4 hover:translate-y-[-5px] transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-brand-yellow/20 flex items-center justify-center text-2xl text-brand-yellow">🥔</div>
+                    <h3 class="font-bold text-lg text-brand-yellow">Potato Peeler Machine</h3>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        Mesin pengupas kulit kentang otomatis berputar cepat. Menjaga kebersihan bahan baku dan meminimalkan kontak tangan manusia agar tetap steril.
+                    </p>
+                </div>
+                <!-- Machine 2 -->
+                <div class="machine-card bg-white/10 backdrop-blur border border-white/15 p-6 rounded-2xl space-y-4 hover:translate-y-[-5px] transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-brand-yellow/20 flex items-center justify-center text-2xl text-brand-yellow">🔪</div>
+                    <h3 class="font-bold text-lg text-brand-yellow">Precision Slicer</h3>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        Pemotong mekanis berpresisi tinggi untuk menghasilkan serat kentang tipis seragam. Menghindari kentang mustofa gosong sebelah saat digoreng.
+                    </p>
+                </div>
+                <!-- Machine 3 -->
+                <div class="machine-card bg-white/10 backdrop-blur border border-white/15 p-6 rounded-2xl space-y-4 hover:translate-y-[-5px] transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-brand-yellow/20 flex items-center justify-center text-2xl text-brand-yellow">🌀</div>
+                    <h3 class="font-bold text-lg text-brand-yellow">Minyak Spinner</h3>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        Sentrifugasi pemutar minyak untuk meniriskan sisa minyak goreng pasca pembumbuan. Hasil mustofa menjadi super garing & tahan tengik berbulan-bulan.
+                    </p>
+                </div>
+                <!-- Machine 4 -->
+                <div class="machine-card bg-white/10 backdrop-blur border border-white/15 p-6 rounded-2xl space-y-4 hover:translate-y-[-5px] transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-brand-yellow/20 flex items-center justify-center text-2xl text-brand-yellow">🏷️</div>
+                    <h3 class="font-bold text-lg text-brand-yellow">Barcode & Heat Sealer</h3>
+                    <p class="text-sm text-white/80 leading-relaxed">
+                        Sistem pelabelan barcode standar ritel modern digital dan penyegel panas kedap udara tinggi, menjaga kesegaran produk di rak gerai ritel.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT CATALOG & FILTER -->
+    <section id="produk" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div class="space-y-4 max-w-xl">
+                <span class="text-brand-red font-bold text-sm uppercase tracking-wider block">Katalog Unggulan Kami</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Kelezatan Pilihan Keluarga Mahkota</h2>
+                <p class="text-gray-600">Pilih menu premium sehat untuk disantap keluarga tercinta, teman santai sore, atau lauk pendamping harian Anda.</p>
+            </div>
+            
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap gap-2 mt-6 md:mt-0 prod-filter-scroll">
+                <button onclick="filterProducts('all')" id="btn-all" class="prod-filter-btn px-5 py-2.5 rounded-full text-sm font-bold bg-brand-red text-white transition-all shadow whitespace-nowrap">Semua</button>
+                <button onclick="filterProducts('mustofa')" id="btn-mustofa" class="prod-filter-btn px-5 py-2.5 rounded-full text-sm font-bold bg-white text-gray-700 hover:bg-brand-red hover:text-white transition-all shadow-sm whitespace-nowrap">Mustofa</button>
+                <button onclick="filterProducts('sambal')" id="btn-sambal" class="prod-filter-btn px-5 py-2.5 rounded-full text-sm font-bold bg-white text-gray-700 hover:bg-brand-red hover:text-white transition-all shadow-sm whitespace-nowrap">Sambal Botol</button>
+                <button onclick="filterProducts('cookies')" id="btn-cookies" class="prod-filter-btn px-5 py-2.5 rounded-full text-sm font-bold bg-white text-gray-700 hover:bg-brand-red hover:text-white transition-all shadow-sm whitespace-nowrap">Nastar & Kue</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Product Catalog Cards Grid -->
+        <div id="catalog-products-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
+
+    <!-- INTERACTIVE ORDER CALCULATOR & WHATSAPP GENERATOR -->
+    <section id="pesan" class="py-20 bg-white border-t border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12 items-start">
+                <!-- Left: Form Input -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div class="space-y-4">
+                        <span class="text-brand-yellow font-extrabold uppercase tracking-widest text-sm bg-brand-red/10 text-brand-red px-4 py-1.5 rounded-full inline-block">Kalkulator Belanja & Pemesanan</span>
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark">Formulir Pesanan Cepat WhatsApp</h2>
+                        <p class="text-gray-600">Pilih menu, tentukan jumlah porsi pesanan Anda, lengkapi detail pengiriman, dan kirim pesan otomatis langsung ke admin WhatsApp kami tanpa perlu mengetik ulang!</p>
+                    </div>
+
+                    <!-- Input Fields -->
+                    <div class="bg-brand-cream/30 p-6 md:p-8 rounded-3xl border border-brand-yellow/20 space-y-6">
+                        <h3 class="text-xl font-bold border-b pb-3 text-brand-dark">🛒 Pilih Produk & Jumlah</h3>
+                        
+                        <div id="checkout-products-list" class="space-y-4"></div>
+
+                        <!-- Delivery / Buyer Data -->
+                        <h3 class="text-xl font-bold border-b pb-3 pt-4 text-brand-dark">📍 Informasi Pengiriman</h3>
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2" for="buyer-name">Nama Lengkap</label>
+                                <input type="text" id="buyer-name" placeholder="Contoh: Budi Santoso" autocomplete="name" inputmode="text" autocapitalize="words" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2" for="buyer-phone">No. HP (WhatsApp)</label>
+                                <input type="tel" id="buyer-phone" placeholder="Contoh: 081234567xxx" autocomplete="tel" inputmode="tel" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2" for="buyer-address">Alamat Lengkap Pengiriman</label>
+                                <textarea id="buyer-address" rows="3" placeholder="Tuliskan alamat lengkap beserta kelurahan, kecamatan, dan kota..." autocomplete="street-address" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-red"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Invoice & Action Button -->
+                <div class="lg:col-span-5 lg:sticky lg:top-24 bg-brand-dark text-white p-8 rounded-3xl shadow-2xl border border-white/10 space-y-6">
+                    <h3 class="text-xl font-bold border-b border-white/15 pb-4 text-brand-yellow">Ringkasan Belanja Anda</h3>
+                    
+                    <!-- Dynamic Cart Items Preview -->
+                    <div id="cart-items-list" class="space-y-3 min-h-[120px] text-sm text-white/80">
+                        <p class="text-gray-400 italic text-center py-8">Keranjang belanja kosong. Silakan tambahkan kuantitas produk.</p>
+                    </div>
+
+                    <!-- Total Price Calculation -->
+                    <div class="border-t border-white/15 pt-4 space-y-2">
+                        <div class="flex items-center justify-between text-sm text-white/60">
+                            <span>Subtotal Belanja</span>
+                            <span id="subtotal-amount">Rp 0</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm text-white/60">
+                            <span>Estimasi Ongkir</span>
+                            <span class="text-brand-yellow font-bold">Dihitung otomatis via WA</span>
+                        </div>
+                        <div class="flex items-center justify-between text-lg font-black pt-2 border-t border-white/10">
+                            <span>TOTAL BAYAR</span>
+                            <span id="total-amount" class="text-brand-yellow text-xl">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive WA Order Button -->
+                    <button onclick="sendWhatsAppOrder()" class="w-full bg-green-500 hover:bg-green-600 text-white font-extrabold text-lg py-4 rounded-2xl transition-all shadow-lg hover:scale-[1.02] flex items-center justify-center space-x-3 wa-order-btn">
+                        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.265 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.963C16.588 2.016 14.131 1 11.517 1 6.082 1 1.662 5.371 1.658 10.8c-.001 1.77.487 3.497 1.413 5.041L2.089 20.9l5.127-1.332c1.558.85 3.243 1.298 4.981 1.3 1.341-.001 1.341-.001 1.341-.001zM17.13 13.9c-.287-.143-1.696-.837-1.958-.933-.263-.095-.454-.143-.646.143-.192.287-.741.933-.909 1.124-.167.192-.335.215-.622.072-.287-.143-1.21-.446-2.305-1.424-.853-.761-1.429-1.701-1.597-1.988-.167-.287-.018-.442.125-.584.129-.128.287-.335.43-.502.143-.167.191-.287.287-.478.095-.192.048-.359-.024-.502-.072-.143-.646-1.554-.885-2.129-.233-.56-.469-.482-.646-.492-.167-.008-.359-.01-.55-.01-.192 0-.502.072-.765.359-.263.287-1.004.98-1.004 2.392 0 1.413 1.028 2.775 1.171 2.966.143.192 2.024 3.09 4.903 4.333.685.295 1.219.472 1.636.604.688.219 1.314.187 1.81.113.551-.082 1.696-.693 1.935-1.362.239-.669.239-1.243.167-1.362-.072-.119-.263-.191-.55-.335z"/>
+                        </svg>
+                        <span>Kirim Pesanan Ke WhatsApp</span>
+                    </button>
+                    
+                    <p class="text-[11px] text-gray-400 text-center">Formulir dienkripsi langsung pada peramban Anda dan dikirimkan secara langsung ke saluran resmi WhatsApp Mahkota Aaronros Kota Tangerang Selatan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LEGALITAS & SERTIFIKASI (MUI HALAL + TRAINING STATEMENTS) -->
+    <section id="legalitas" class="py-20 bg-brand-cream relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <span class="text-brand-red font-bold uppercase tracking-wider text-sm block">Kredibilitas Usaha</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark">Sertifikasi & Riwayat Pelatihan Anggota</h2>
+                <p class="text-gray-600">Kepercayaan konsumen adalah mahkota kami. Seluruh proses produksi diawasi ketat dan tersertifikasi resmi oleh dinas kota, provinsi, serta instansi pusat.</p>
+            </div>
+
+            <!-- Certification Badges Grid -->
+            <div class="grid sm:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center space-y-4">
+                    <div class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto">
+                        <span class="text-4xl">🟢</span>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-brand-dark">100% Halal MUI</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Terdaftar resmi sejak April 2021 melalui Klinik Borang Kota Tangerang Selatan, menjamin keamanan syariat bahan baku pangan halal.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center space-y-4">
+                    <div class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto">
+                        <span class="text-4xl">📄</span>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-brand-dark">Sertifikasi P-IRT</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Memiliki Izin PIRT No. <strong class="text-brand-red font-bold">5113674080186-27</strong> dari Dinas Kesehatan Kota Tangerang Selatan.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-all text-center space-y-4">
+                    <div class="w-16 h-16 bg-brand-yellow/10 rounded-full flex items-center justify-center mx-auto">
+                        <span class="text-4xl">⚖️</span>
+                    </div>
+                    <h3 class="font-extrabold text-lg text-brand-dark">Sertifikat Merek Kemenkumham</h3>
+                    <p class="text-sm text-gray-500 leading-relaxed">Merek Mahkota Aaronros telah terdaftar paten secara legal di Kementerian Hukum dan HAM Republik Indonesia sejak September 2021.</p>
+                </div>
+            </div>
+
+            <!-- Interactive Training Timeline Section -->
+            <div class="bg-white p-8 md:p-12 rounded-3xl shadow-lg border border-gray-100">
+                <h3 class="text-2xl font-extrabold text-brand-dark border-b pb-4 mb-8 flex items-center">
+                    📖 Peningkatan Kompetensi & Pelatihan yang Pernah Diikuti
+                </h3>
+                
+                <div class="space-y-8 relative before:absolute before:inset-0 before:left-4 before:md:left-1/2 before:w-1 before:bg-brand-red/15">
+                    <!-- Training Node 1 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-brand-red border-4 border-white -translate-x-[6px] md:-translate-x-1/2"></div>
+                        <div class="w-full md:w-[45%] md:text-right bg-brand-cream/30 p-6 rounded-2xl border border-brand-yellow/20 md:order-1">
+                            <span class="text-xs font-bold text-brand-red block mb-1">April 2019</span>
+                            <h4 class="font-extrabold text-brand-dark">Data Governance & Digital Transformation</h4>
+                            <p class="text-xs text-gray-600 mt-1">Penyelenggara: Swiss German University (SGU) IoT & Industry 4.0</p>
+                        </div>
+                        <div class="hidden md:block w-[10%]"></div>
+                        <div class="w-full md:w-[45%] md:order-2"></div>
+                    </div>
+
+                    <!-- Training Node 2 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-brand-red border-4 border-white -translate-x-[6px] md:-translate-x-1/2"></div>
+                        <div class="w-full md:w-[45%] md:order-2 bg-brand-cream/30 p-6 rounded-2xl border border-brand-yellow/20">
+                            <span class="text-xs font-bold text-brand-red block mb-1">Februari 2020</span>
+                            <h4 class="font-extrabold text-brand-dark">Wirausaha Baru Produktif BBPP</h4>
+                            <p class="text-xs text-gray-600 mt-1">Penyelenggara: Kementerian Ketenagakerjaan Republik Indonesia</p>
+                        </div>
+                        <div class="hidden md:block w-[10%]"></div>
+                        <div class="w-full md:w-[45%] md:order-1"></div>
+                    </div>
+
+                    <!-- Training Node 3 -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-brand-red border-4 border-white -translate-x-[6px] md:-translate-x-1/2"></div>
+                        <div class="w-full md:w-[45%] md:text-right bg-brand-cream/30 p-6 rounded-2xl border border-brand-yellow/20 md:order-1">
+                            <span class="text-xs font-bold text-brand-red block mb-1">April 2021</span>
+                            <h4 class="font-extrabold text-brand-dark">Sistem Jaminan Halal (SJH)</h4>
+                            <p class="text-xs text-gray-600 mt-1">Penyelenggara: Dinas Koperasi UKM Kota Tangsel & MUI Banten</p>
+                        </div>
+                        <div class="hidden md:block w-[10%]"></div>
+                        <div class="w-full md:w-[45%] md:order-2"></div>
+                    </div>
+
+                    <!-- Training Node 4 (Juni 2022) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-brand-red border-4 border-white -translate-x-[6px] md:-translate-x-1/2"></div>
+                        <div class="w-full md:w-[45%] md:order-2 bg-brand-cream/30 p-6 rounded-2xl border border-brand-yellow/20">
+                            <span class="text-xs font-bold text-brand-red block mb-1">Juni 2022</span>
+                            <h4 class="font-extrabold text-brand-dark">Pelatihan Digital Marketing & Tips Instagram</h4>
+                            <p class="text-xs text-gray-600 mt-1">Penyelenggara: Dinas Koperasi & UKM Kota Tangerang Selatan</p>
+                            <div class="mt-3 overflow-hidden rounded-xl bg-black/5 aspect-[16/9] border border-brand-yellow/10">
+                                <img src="gambar/20220603_145630.jpg" alt="Ibu Rosniati dalam Pelatihan Digital Marketing" class="object-cover w-full h-full hover:scale-105 transition-all duration-300">
+                            </div>
+                        </div>
+                        <div class="hidden md:block w-[10%]"></div>
+                        <div class="w-full md:w-[45%] md:order-1"></div>
+                    </div>
+
+                    <!-- Training Node 5 (Agustus 2022) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-brand-red border-4 border-white -translate-x-[6px] md:-translate-x-1/2"></div>
+                        <div class="w-full md:w-[45%] md:text-right bg-brand-cream/30 p-6 rounded-2xl border border-brand-yellow/20 md:order-1">
+                            <span class="text-xs font-bold text-brand-red block mb-1">Agustus 2022</span>
+                            <h4 class="font-extrabold text-brand-dark">Tata Cara Ekspor Produk UKM</h4>
+                            <p class="text-xs text-gray-600 mt-1">Penyelenggara: Dinas Koperasi UKM Provinsi Banten</p>
+                        </div>
+                        <div class="hidden md:block w-[10%]"></div>
+                        <div class="w-full md:w-[45%] md:order-2"></div>
+                    </div>
+
+                    <!-- Training Node 6 (September 2022) -->
+                    <div class="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-0">
+                        <div class="absolute left-4 md:left-1/2 w-4 h-4 rounded-full bg-brand-red border-4 border-white -translate-x-[6px] md:-translate-x-1/2"></div>
+                        <div class="w-full md:w-[45%] md:order-2 bg-brand-cream/30 p-6 rounded-2xl border border-brand-yellow/20">
+                            <span class="text-xs font-bold text-brand-red block mb-1">September 2022</span>
+                            <h4 class="font-extrabold text-brand-dark">Teknik Pemasaran Berbasis IT Anggota Koperasi</h4>
+                            <p class="text-xs text-gray-600 mt-1">Penyelenggara: Dinas Koperasi & UKM Kota Tangerang Selatan (Marina Hotel Serpong)</p>
+                            <div class="mt-3 grid grid-cols-2 gap-2">
+                                <div class="overflow-hidden rounded-xl bg-black/5 aspect-[16/10] border border-brand-yellow/10">
+                                    <img src="gambar/20220907_092830.jpg" alt="Dokumentasi Kelas Pelatihan IT" class="object-cover w-full h-full hover:scale-105 transition-all duration-300" title="Pelatihan IT Serpong">
+                                </div>
+                                <div class="overflow-hidden rounded-xl bg-black/5 aspect-[16/10] border border-brand-yellow/10">
+                                    <img src="gambar/20220905_114011.jpg" alt="Slide Cara Berpikir Customer" class="object-cover w-full h-full hover:scale-105 transition-all duration-300" title="Slide Mindset Customer">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden md:block w-[10%]"></div>
+                        <div class="w-full md:w-[45%] md:order-1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOCUMENTATION GALLERY SECTION -->
+    <section id="galeri" class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-gray-100">
+        <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+            <span class="text-brand-red font-bold uppercase tracking-wider text-sm block">👑 Pameran & Ritel</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark">Dokumentasi Kegiatan & Bazaar</h2>
+            <p class="text-gray-600">Mahkota Aaronros secara aktif berpartisipasi dalam pameran produk unggulan daerah, kemitraan koperasi, dan event ritel nasional untuk mendekatkan rasa autentik kami ke pelanggan.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Gallery Card 1 -->
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 group hover:-translate-y-1.5 transition-all duration-300">
+                <div class="aspect-[16/10] w-full overflow-hidden bg-black/5 relative">
+                    <img src="gambar/20220904_091506.jpg" alt="Stan Ritel Pameran Mahkota Aaronros" class="object-cover w-full h-full group-hover:scale-105 transition-all duration-500">
+                    <div class="absolute top-4 left-4 bg-brand-yellow text-brand-dark font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider shadow">Outdoor Bazaar</div>
+                </div>
+                <div class="p-6 space-y-3">
+                    <h3 class="text-xl font-extrabold text-brand-dark group-hover:text-brand-red transition-colors">Stan Ritel Pameran Mahkota Aaronros</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Menghadirkan produk unggulan Kering Kentang Mustofa bumbu balado karamel dan aneka varian Sambal Botol langsung di hadapan masyarakat pada pameran UKM Tangerang Selatan.</p>
+                </div>
+            </div>
+
+            <!-- Gallery Card 2 -->
+            <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-gray-100 group hover:-translate-y-1.5 transition-all duration-300">
+                <div class="aspect-[16/10] w-full overflow-hidden bg-black/5 relative">
+                    <img src="gambar/20220730_083746.jpg" alt="Display Booth Table Mahkota Aaronros" class="object-cover w-full h-full group-hover:scale-105 transition-all duration-500">
+                    <div class="absolute top-4 left-4 bg-brand-yellow text-brand-dark font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider shadow">Indoor Exhibition</div>
+                </div>
+                <div class="p-6 space-y-3">
+                    <h3 class="text-xl font-extrabold text-brand-dark group-hover:text-brand-red transition-colors">Booth Pameran Ritel Terintegrasi</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">Display terpadu produk-produk Mahkota Cookies, Kentang Mustofa, Nastar premium, serta Jus Mangga segar pada pameran koperasi daerah dengan standar display higienis.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIALS SECTION -->
+    <section class="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto space-y-4 mb-16">
+            <span class="text-brand-red font-bold uppercase tracking-wider text-sm block">Ulasan Pelanggan</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark">Apa Kata Pecinta Mahkota Aaronros?</h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+                <div class="text-brand-yellow text-xl">⭐⭐⭐⭐⭐</div>
+                <p class="text-gray-600 italic">"Gila garing banget mustofanya! Nggak becek minyak sama sekali. Tiap makan nasi anget kudu dikasih taburan kering kentang mustofa rasa teri kacang dari Mahkota."</p>
+                <div class="flex items-center space-x-3 pt-2">
+                    <div class="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-bold text-white text-sm">H</div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-sm">Hendra S.</h4>
+                        <span class="text-xs text-gray-400">Tangerang Selatan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+                <div class="text-brand-yellow text-xl">⭐⭐⭐⭐⭐</div>
+                <p class="text-gray-600 italic">"Sambel cuminya porsinya gak main-main! Cuminya empuk gede-gede gak alot. Rasa pedes asinnya pas gurih parah, botol kaca tersegel rapi banget."</p>
+                <div class="flex items-center space-x-3 pt-2">
+                    <div class="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-bold text-white text-sm">A</div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-sm">Anisa Putri</h4>
+                        <span class="text-xs text-gray-400">Jakarta Selatan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-4">
+                <div class="text-brand-yellow text-xl">⭐⭐⭐⭐⭐</div>
+                <p class="text-gray-600 italic">"Kue nastarnya beneran lumer, selai nanasnya alami asam manis wangi wysman. Kelihatan banget diproses higienis dan bahan-bahannya kelas premium."</p>
+                <div class="flex items-center space-x-3 pt-2">
+                    <div class="w-10 h-10 bg-brand-red rounded-full flex items-center justify-center font-bold text-white text-sm">R</div>
+                    <div>
+                        <h4 class="font-bold text-gray-800 text-sm">Rina K.</h4>
+                        <span class="text-xs text-gray-400">Bintaro</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-dark text-white pt-16 pb-12 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 brand-pattern"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            
+            <div class="grid md:grid-cols-4 gap-8 border-b border-white/10 pb-12">
+                <!-- Brand Info -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-10 h-10 text-brand-yellow" viewBox="0 0 100 100" fill="currentColor">
+                            <path d="M15,75 L85,75 L80,85 L20,85 Z" />
+                            <path d="M15,75 L12,40 L16,40 L18,70 Z" />
+                            <path d="M32,75 L28,30 L32,30 L34,70 Z" />
+                            <path d="M50,75 L50,18 L53,22 L47,22 Z" />
+                            <path d="M68,75 L72,30 L68,30 L66,70 Z" />
+                            <path d="M85,75 L88,40 L84,40 L82,70 Z" />
+                        </svg>
+                        <span class="text-xl font-bold tracking-wider">MAHKOTA</span>
+                    </div>
+                    <p class="text-sm text-white/60 leading-relaxed">
+                        UKM terdaftar resmi Tangerang Selatan yang memproduksi olahan pangan praktis premium, halal sertifikat MUI, higienis berteknologi presisi.
+                    </p>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-brand-yellow">Tautan Pintas</h4>
+                    <ul class="space-y-2 text-sm text-white/75">
+                        <li><a href="#beranda" class="hover:text-brand-yellow transition-colors">Beranda</a></li>
+                        <li><a href="#tentang" class="hover:text-brand-yellow transition-colors">Tentang Ibu Rosniati</a></li>
+                        <li><a href="#produk" class="hover:text-brand-yellow transition-colors">Katalog Produk</a></li>
+                        <li><a href="#pesan" class="hover:text-brand-yellow transition-colors">Kalkulator Pesan</a></li>
+                    </ul>
+                </div>
+
+                <!-- Outlet Store Locations -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-brand-yellow">Tersedia Ritel Di</h4>
+                    <ul class="space-y-2 text-sm text-white/75">
+                        <li>📍 Teras Kota, Tangsel</li>
+                        <li>📍 Hypermart Cibubur Junction</li>
+                        <li>📍 Hypermart Pejaten Village</li>
+                        <li>📍 PKK Mart Tangerang Selatan</li>
+                        <li>📍 Boourac Marketplace (Ekspor)</li>
+                    </ul>
+                </div>
+
+                <!-- Contact & Social Media Info -->
+                <div class="space-y-4">
+                    <h4 class="font-bold text-brand-yellow">Kontak Kami</h4>
+                    <p class="text-sm text-white/75">
+                        📍 <span id="footer-address">Batan Indah, Blok O No. 60<br>Tangerang Selatan, Banten, Indonesia</span>
+                    </p>
+                    <p class="text-sm text-white/75">
+                        📞 WhatsApp: <strong class="text-brand-yellow" id="footer-wa-display">0811-8776-635 / 0811-979-3011</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Footer Bottom Section -->
+            <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4 sm:gap-0">
+                <p>&copy; 2026 UKM Mahkota Aaronros. Hak Cipta Dilindungi. Terdaftar Kemenkumham Merek No: September 2021.</p>
+                <p>Designed with ❤️ for Aaronros Family</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile-friendly Back to Top Button -->
+    <button id="back-to-top" aria-label="Kembali ke atas" class="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-brand-red text-white shadow-lg hover:bg-brand-darkred transition-all opacity-0 invisible flex items-center justify-center safe-area-bottom" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"></path></svg>
+    </button>
+
+    <!-- DYNAMIC POPUP BANNER FOR GENERAL NOTIFICATIONS (Replaces alert) -->
+    <div id="notification-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-sm w-full text-center space-y-4 shadow-2xl border border-gray-100">
+            <div id="notif-icon" class="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto text-3xl">🎉</div>
+            <h3 id="notif-title" class="text-xl font-extrabold text-brand-dark">Pemberitahuan Berhasil</h3>
+            <p id="notif-message" class="text-sm text-gray-500 leading-relaxed">Produk pilihan Anda telah diset ke form belanja!</p>
+            <button onclick="closeNotification()" class="w-full bg-brand-red hover:bg-brand-darkred text-white py-3 rounded-full font-bold transition-all shadow-md">
+                Tutup Jendela
+            </button>
+        </div>
+    </div>
+
+    <!-- Three.js - loaded dynamically only on desktop for better mobile performance -->
+    <script>
+        (function() {
+            const isMobile = window.matchMedia('(max-width: 767px)').matches;
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (!isMobile && !reducedMotion) {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';
+                script.async = true;
+                script.onload = function() {
+                    window.THREE_LOADED = true;
+                };
+                document.head.appendChild(script);
+            }
+        })();
+    </script>
+    <script>
+        (function () {
+            'use strict';
+
+            // --- MAHKOTA CONFIG START ---
+            const mahkotaConfig = {
+                waNumber: '628118776635',
+                waDisplay: '0811-8776-635 / 0811-979-3011',
+                storeAddress: 'Batan Indah, Blok O No. 60\nTangerang Selatan, Banten, Indonesia',
+                travelData: {
+                    pekanbaru: 'Di Pekanbaru dan Duri (Riau), Ibu Rosniati mendalami bumbu rempah dasar Sumatra, termasuk teknik pengawetan kering kentang balado karamel legendaris yang manis gurih tanpa pemanis buatan.',
+                    batam: 'Saat berlabuh di Batam (Kepulauan Riau), beliau mendalami karakteristik bahan baku seafood segar serta adaptasi selera melayu setempat, yang kemudian melahirkan kreasi Sambal Cumi Asin andalan.',
+                    malaysia: 'Tinggal di Ipoh, Perak, Malaysia menjadi masa keemasan Ibu Rosniati mengeksplorasi pembuatan cookies premium bergaya peranakan melayu-tionghoa modern yang super higienis, termasuk standar adonan Nastar lembut lumer.',
+                    jakarta: 'Kembali ke Jakarta Selatan & Tangerang Selatan, seluruh khazanah kuliner nusantara dipadupadankan dalam brand Mahkota Aaronros. Beliau menyinergikan ilmu Teknik Kimia untuk sertifikasi pangan, jaminan halal, dan P-IRT.'
+                },
+                products: [
+                    {
+                        id: 'mustofa_ori',
+                        category: 'mustofa',
+                        name: 'Kering Kentang Mustofa (Original)',
+                        priceDisplay: 'Rp 25.000 - 45.000',
+                        price: 45000,
+                        unit: 'pouch',
+                        description: 'Olahan kentang mustofa bumbu balado murni renyah, manis pedas sedang, pas sebagai lauk pendamping nasi hangat.',
+                        tag: 'Favorit',
+                        imageType: 'mustofa',
+                        imageUrl: 'gambar/20220904_091506.jpg',
+                        variant: 'original',
+                        weight: '150g'
+                    },
+                    {
+                        id: 'mustofa_teri',
+                        category: 'mustofa',
+                        name: 'Kering Kentang Mustofa (Teri)',
+                        priceDisplay: 'Rp 28.000 - 48.000',
+                        price: 48000,
+                        unit: 'pouch',
+                        description: 'Perpaduan kentang super renyah dengan gurihnya Teri Medan asin berkualitas tinggi. Sangat sedap dikunyah langsung.',
+                        tag: '',
+                        imageType: 'mustofa',
+                        imageUrl: 'gambar/20220904_091506.jpg',
+                        variant: 'teri',
+                        weight: '150g'
+                    },
+                    {
+                        id: 'mustofa_teri_kacang',
+                        category: 'mustofa',
+                        name: 'Kering Kentang Teri Kacang',
+                        priceDisplay: 'Rp 30.000 - 50.000',
+                        price: 50000,
+                        unit: 'pouch',
+                        description: 'Varian super lengkap perpaduan garingnya kentang pilihan, gurih asin teri Medan, dan renyahnya kacang tanah kupas.',
+                        tag: '',
+                        imageType: 'mustofa',
+                        imageUrl: 'gambar/20220904_091506.jpg',
+                        variant: 'teri kacang',
+                        weight: '150g'
+                    },
+                    {
+                        id: 'sambel_bawang',
+                        category: 'sambal',
+                        name: 'Sambel Mahkota (Sambal Bawang)',
+                        priceDisplay: 'Rp 35.000',
+                        price: 35000,
+                        unit: 'botol',
+                        description: 'Sambal bawang premium wangi nan gurih. Memakai perpaduan cabai merah murni pilihan dan minyak kelapa bermutu tinggi.',
+                        tag: '',
+                        imageType: 'sambal',
+                        imageUrl: 'gambar/20220607_093551.jpg',
+                        variant: 'bawang',
+                        weight: '180g'
+                    },
+                    {
+                        id: 'sambel_cumi',
+                        category: 'sambal',
+                        name: 'Sambel Mahkota (Sambal Cumi)',
+                        priceDisplay: 'Rp 40.000',
+                        price: 40000,
+                        unit: 'botol',
+                        description: 'Kenikmatan ekstra cumi asin empuk melimpah ruah yang diolah bersama rempah gurih khas bumbu Aaronros.',
+                        tag: '',
+                        imageType: 'sambal',
+                        imageUrl: 'gambar/20220607_093551.jpg',
+                        variant: 'cumi asin',
+                        weight: '180g'
+                    },
+                    {
+                        id: 'nastar',
+                        category: 'cookies',
+                        name: 'Nastar Cookies Mahkota',
+                        priceDisplay: 'Rp 85.000',
+                        price: 85000,
+                        unit: 'toples',
+                        description: 'Kue nastar premium menggunakan mentega (Wysman) wangi lembut lumer di lidah dengan isian selai nanas madu buatan sendiri.',
+                        tag: '',
+                        imageType: 'cookies',
+                        imageUrl: 'gambar/20220730_083746.jpg',
+                        variant: 'nastar premium',
+                        weight: 'toples'
+                    }
+                ]
+            };
+            // --- MAHKOTA CONFIG END ---
+
+            const travelData = mahkotaConfig.travelData;
+            const prices = {};
+            const names = {};
+            const cart = {};
+
+            // Initialize prices, names, cart from mahkotaConfig
+            mahkotaConfig.products.forEach(p => {
+                prices[p.id] = p.price;
+                names[p.id] = p.name;
+                cart[p.id] = 0;
+            });
+
+            const isMobile = window.matchMedia('(max-width: 767px)').matches;
+            const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const lowPower = isMobile || reducedMotion;
+
+            function formatRupiah(value) {
+                return 'Rp ' + value.toLocaleString('id-ID');
+            }
+
+            function showNotification(title, message, type) {
+                const modal = document.getElementById('notification-modal');
+                const icon = document.getElementById('notif-icon');
+                const titleNode = document.getElementById('notif-title');
+                const messageNode = document.getElementById('notif-message');
+
+                if (!modal || !icon || !titleNode || !messageNode) return;
+
+                titleNode.textContent = title;
+                messageNode.textContent = message;
+                icon.textContent = type === 'warning' ? '⚠️' : '🎉';
+                modal.classList.remove('hidden');
+            }
+
+            function closeNotification() {
+                const modal = document.getElementById('notification-modal');
+                if (modal) modal.classList.add('hidden');
+            }
+
+            function showCityDetail(cityKey) {
+                const buttons = document.querySelectorAll('.city-btn');
+                buttons.forEach((btn) => {
+                    btn.classList.remove('bg-brand-red', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+
+                const activeBtn = document.getElementById('btn-' + cityKey);
+                if (activeBtn) {
+                    activeBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                    activeBtn.classList.add('bg-brand-red', 'text-white');
+                }
+
+                const descText = document.getElementById('city-text');
+                if (descText && travelData[cityKey]) {
+                    descText.textContent = travelData[cityKey];
+                }
+            }
+
+            function filterProducts(category) {
+                const buttons = document.querySelectorAll('.prod-filter-btn');
+                buttons.forEach((btn) => {
+                    btn.classList.remove('bg-brand-red', 'text-white', 'shadow');
+                    btn.classList.add('bg-white', 'text-gray-700', 'shadow-sm');
+                });
+
+                const activeBtn = document.getElementById('btn-' + category);
+                if (activeBtn) {
+                    activeBtn.classList.remove('bg-white', 'text-gray-700', 'shadow-sm');
+                    activeBtn.classList.add('bg-brand-red', 'text-white', 'shadow');
+                }
+
+                const cards = document.querySelectorAll('.prod-card');
+                cards.forEach((card) => {
+                    const visible = category === 'all' || card.getAttribute('data-category') === category;
+                    card.style.display = visible ? 'block' : 'none';
+                });
+            }
+
+            function updateCartSummary() {
+                const listContainer = document.getElementById('cart-items-list');
+                const subtotalNode = document.getElementById('subtotal-amount');
+                const totalNode = document.getElementById('total-amount');
+
+                let subtotal = 0;
+                let hasItems = false;
+                let htmlContent = '';
+
+                Object.keys(cart).forEach((key) => {
+                    if (cart[key] <= 0) return;
+                    hasItems = true;
+                    const itemTotal = cart[key] * prices[key];
+                    subtotal += itemTotal;
+
+                    htmlContent += '<div class="flex items-center justify-between border-b border-white/10 pb-2">'
+                        + '<div><span class="block font-bold text-white">' + names[key] + '</span>'
+                        + '<span class="text-xs text-white/50">' + cart[key] + ' pcs x ' + formatRupiah(prices[key]) + '</span></div>'
+                        + '<span class="font-extrabold text-brand-yellow">' + formatRupiah(itemTotal) + '</span></div>';
+                });
+
+                if (!hasItems) {
+                    htmlContent = '<p class="text-gray-400 italic text-center py-8">Keranjang belanja kosong. Silakan tambahkan kuantitas produk.</p>';
+                }
+
+                if (listContainer) listContainer.innerHTML = htmlContent;
+                if (subtotalNode) subtotalNode.textContent = formatRupiah(subtotal);
+                if (totalNode) totalNode.textContent = formatRupiah(subtotal);
+            }
+
+            function changeQty(key, delta) {
+                if (!(key in cart)) return;
+                cart[key] = Math.max(0, cart[key] + delta);
+                const qtyNode = document.getElementById('qty-' + key);
+                if (qtyNode) qtyNode.textContent = cart[key];
+                updateCartSummary();
+            }
+
+            function selectProductPreset(productName) {
+                const prod = mahkotaConfig.products.find(p => p.name === productName || productName.indexOf(p.variant) !== -1);
+                if (!prod) return;
+
+                cart[prod.id] += 1;
+                const qtyNode = document.getElementById('qty-' + prod.id);
+                if (qtyNode) qtyNode.textContent = cart[prod.id];
+                updateCartSummary();
+                showNotification('Produk Dipilih', 'Sukses memasukkan 1 pcs ' + names[prod.id] + ' ke dalam keranjang kalkulator belanja Anda!', 'success');
+            }
+
+            function sendWhatsAppOrder() {
+                const name = (document.getElementById('buyer-name') || {}).value || '';
+                const phone = (document.getElementById('buyer-phone') || {}).value || '';
+                const address = (document.getElementById('buyer-address') || {}).value || '';
+
+                const cleanedName = name.trim();
+                const cleanedPhone = phone.trim();
+                const cleanedAddress = address.trim();
+
+                if (!cleanedName || !cleanedPhone || !cleanedAddress) {
+                    showNotification('Data Tidak Lengkap', 'Silakan isi Nama Lengkap, Nomor HP WhatsApp, dan Alamat Lengkap untuk melanjutkan pemesanan.', 'warning');
+                    return;
+                }
+
+                const digitsOnlyPhone = cleanedPhone.replace(/[^\d]/g, '');
+                if (digitsOnlyPhone.length < 10) {
+                    showNotification('Nomor Tidak Valid', 'Nomor WhatsApp sepertinya terlalu pendek. Mohon cek kembali nomor yang Anda masukkan.', 'warning');
+                    return;
+                }
+
+                let itemsText = '';
+                let subtotal = 0;
+                let hasItems = false;
+
+                Object.keys(cart).forEach((key) => {
+                    if (cart[key] <= 0) return;
+                    hasItems = true;
+                    const itemTotal = cart[key] * prices[key];
+                    subtotal += itemTotal;
+                    itemsText += '- ' + names[key] + ' x' + cart[key] + ' (' + formatRupiah(itemTotal) + ')\n';
+                });
+
+                if (!hasItems) {
+                    showNotification('Keranjang Kosong', 'Silakan pilih minimal 1 item produk terlebih dahulu pada menu pilihan.', 'warning');
+                    return;
+                }
+
+                const message = 'Halo Admin UKM Mahkota Aaronros,\n'
+                    + 'Saya ingin memesan menu kuliner premium keluarga Mahkota berikut:\n\n'
+                    + itemsText + '\n'
+                    + '*Total Belanja:* ' + formatRupiah(subtotal) + '\n\n'
+                    + '*Detail Pengiriman:*\n'
+                    + '👤 Nama: ' + cleanedName + '\n'
+                    + '📞 No. WA: ' + cleanedPhone + '\n'
+                    + '📍 Alamat: ' + cleanedAddress + '\n\n'
+                    + 'Mohon informasikan rincian ongkir dan instruksi pembayarannya. Terima kasih!';
+
+                const waNumber = mahkotaConfig.waNumber;
+                const waUrl = 'https://api.whatsapp.com/send?phone=' + waNumber + '&text=' + encodeURIComponent(message);
+                window.open(waUrl, '_blank', 'noopener,noreferrer');
+            }
+
+            function setupRevealAnimations() {
+                const targets = [
+                    ...document.querySelectorAll('.prod-card'),
+                    ...document.querySelectorAll('.machine-card'),
+                    ...document.querySelectorAll('#legalitas .grid > div')
+                ];
+
+                targets.forEach((el) => el.classList.add('anim-fade-up'));
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) return;
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    });
+                }, { threshold: 0.18, rootMargin: '0px 0px -10% 0px' });
+
+                targets.forEach((el) => observer.observe(el));
+            }
+
+            function setupCardTilt() {
+                const cards = document.querySelectorAll('.prod-card, .machine-card');
+                cards.forEach((card) => {
+                    card.style.transformStyle = 'preserve-3d';
+                    card.style.willChange = 'transform';
+
+                    card.addEventListener('pointermove', (event) => {
+                        if (lowPower) return;
+                        const rect = card.getBoundingClientRect();
+                        const nx = (event.clientX - rect.left) / rect.width - 0.5;
+                        const ny = (event.clientY - rect.top) / rect.height - 0.5;
+                        const rx = -ny * 7;
+                        const ry = nx * 9;
+                        card.style.transform = 'perspective(1100px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) scale(1.015)';
+                        card.style.boxShadow = '0 24px 55px rgba(0,0,0,0.18), 0 0 0 1px rgba(242,187,5,0.12)';
+                    });
+
+                    card.addEventListener('pointerleave', () => {
+                        card.style.transform = '';
+                        card.style.boxShadow = '';
+                    });
+                });
+            }
+
+            function setupFounderRouteAnimation() {
+                const section = document.getElementById('tentang');
+                if (!section) return;
+                const panel = section.querySelector('.bg-white.p-6.rounded-2xl');
+                if (!panel) return;
+
+                panel.style.position = 'relative';
+                panel.style.isolation = 'isolate';
+
+                const svgNS = 'http://www.w3.org/2000/svg';
+                const svg = document.createElementNS(svgNS, 'svg');
+                svg.setAttribute('viewBox', '0 0 1000 280');
+                svg.classList.add('route-overlay');
+
+                const glowPath = document.createElementNS(svgNS, 'path');
+                glowPath.setAttribute('fill', 'none');
+                glowPath.setAttribute('stroke', '#C1121F');
+                glowPath.setAttribute('stroke-width', '10');
+                glowPath.setAttribute('opacity', '0.12');
+
+                const routePath = document.createElementNS(svgNS, 'path');
+                routePath.setAttribute('fill', 'none');
+                routePath.setAttribute('stroke', '#F2BB05');
+                routePath.setAttribute('stroke-width', '4');
+                routePath.setAttribute('stroke-linecap', 'round');
+
+                const marker = document.createElementNS(svgNS, 'circle');
+                marker.setAttribute('r', '8');
+                marker.setAttribute('fill', '#F2BB05');
+                marker.setAttribute('stroke', '#FFFFFF');
+                marker.setAttribute('stroke-width', '2');
+
+                svg.appendChild(glowPath);
+                svg.appendChild(routePath);
+                svg.appendChild(marker);
+                panel.prepend(svg);
+
+                let length = 1;
+                let raf = 0;
+
+                function rebuildRoute() {
+                    const panelRect = panel.getBoundingClientRect();
+                    const ids = ['btn-pekanbaru', 'btn-batam', 'btn-malaysia', 'btn-jakarta'];
+                    const points = ids.map((id) => {
+                        const btn = document.getElementById(id);
+                        if (!btn) return null;
+                        const rect = btn.getBoundingClientRect();
+                        return {
+                            x: ((rect.left - panelRect.left + rect.width / 2) / Math.max(panelRect.width, 1)) * 1000,
+                            y: ((rect.top - panelRect.top + rect.height / 2) / Math.max(panelRect.height, 1)) * 280
+                        };
+                    }).filter(Boolean);
+
+                    if (points.length < 2) return;
+
+                    let d = 'M ' + points[0].x + ' ' + points[0].y;
+                    for (let i = 1; i < points.length; i += 1) {
+                        const prev = points[i - 1];
+                        const curr = points[i];
+                        const midX = (prev.x + curr.x) / 2;
+                        d += ' C ' + midX + ' ' + prev.y + ', ' + midX + ' ' + curr.y + ', ' + curr.x + ' ' + curr.y;
+                    }
+
+                    routePath.setAttribute('d', d);
+                    glowPath.setAttribute('d', d);
+                    length = routePath.getTotalLength() || 1;
+                }
+
+                function animate() {
+                    const t = performance.now() * 0.001;
+                    const pos = (t * 36) % length;
+                    const p = routePath.getPointAtLength(pos);
+                    marker.setAttribute('cx', p.x.toFixed(2));
+                    marker.setAttribute('cy', p.y.toFixed(2));
+                    routePath.setAttribute('stroke-dasharray', (length * 0.2).toFixed(2) + ' ' + length.toFixed(2));
+                    routePath.setAttribute('stroke-dashoffset', (-pos * 0.45).toFixed(2));
+                    raf = window.requestAnimationFrame(animate);
+                }
+
+                rebuildRoute();
+                animate();
+                window.addEventListener('resize', rebuildRoute, { passive: true });
+
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden) {
+                        window.cancelAnimationFrame(raf);
+                    } else {
+                        animate();
+                    }
+                });
+            }
+
+            function setupSectionParticles() {
+                const machine = document.getElementById('mesin');
+                const product = document.getElementById('produk');
+
+                function createLayer(section, cls, particleCls, color, count) {
+                    if (!section) return;
+                    const layer = document.createElement('div');
+                    layer.className = cls;
+                    section.prepend(layer);
+                    const particles = [];
+
+                    const maxCount = lowPower ? Math.max(2, Math.floor(count / 2)) : count;
+                    for (let i = 0; i < maxCount; i += 1) {
+                        const dot = document.createElement('span');
+                        dot.className = particleCls;
+                        const size = 8 + (i % 3) * 4;
+                        dot.style.width = size + 'px';
+                        dot.style.height = size + 'px';
+                        dot.style.opacity = '0.55';
+                        dot.style.background = 'radial-gradient(circle, ' + color + ' 0%, rgba(242,187,5,0.16) 45%, rgba(242,187,5,0) 75%)';
+                        layer.appendChild(dot);
+                        particles.push({
+                            el: dot,
+                            phase: Math.random() * Math.PI * 2,
+                            speed: 0.18 + i * 0.04,
+                            rx: 22 + i * 8,
+                            ry: 12 + i * 5
+                        });
+                    }
+
+                    function tick() {
+                        const t = performance.now() * 0.001;
+                        const rect = section.getBoundingClientRect();
+                        const w = Math.max(rect.width, 1);
+                        const h = Math.max(rect.height, 1);
+
+                        particles.forEach((p, i) => {
+                            const x = w * (0.12 + ((i + 1) / (particles.length + 1)) * 0.74) + Math.sin(t * p.speed + p.phase) * p.rx;
+                            const y = h * (0.2 + (i % 3) * 0.24) + Math.cos(t * p.speed * 1.4 + p.phase) * p.ry;
+                            p.el.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0)';
+                        });
+
+                        requestAnimationFrame(tick);
+                    }
+
+                    tick();
+                }
+
+                createLayer(machine, 'machine-particle-layer', 'machine-particle', '#FDF0D5', 5);
+                createLayer(product, 'product-particle-layer', 'product-particle', '#F2BB05', 7);
+            }
+
+            function setupHeroThreeFlow() {
+                const hero = document.getElementById('beranda');
+                if (!hero || lowPower || typeof window.THREE === 'undefined') {
+                    return;
+                }
+                // Additional check for THREE_LOADED flag
+                if (!window.THREE_LOADED && typeof window.THREE === 'undefined') {
+                    return;
+                }
+
+                const THREE = window.THREE;
+                const canvas = document.createElement('canvas');
+                canvas.className = 'hero-flow-canvas';
+                hero.prepend(canvas);
+
+                const renderer = new THREE.WebGLRenderer({
+                    canvas,
+                    alpha: true,
+                    antialias: true,
+                    powerPreference: 'high-performance'
+                });
+                renderer.setClearColor(0x000000, 0);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+                camera.position.set(0, 0, 8.4);
+
+                const ambient = new THREE.AmbientLight(0xfff0c2, 1.1);
+                const keyLight = new THREE.DirectionalLight(0xffd38d, 1.35);
+                keyLight.position.set(-2, 2, 4);
+                scene.add(ambient, keyLight);
+
+                function makeCurve(seed, yOffset) {
+                    return new THREE.CatmullRomCurve3([
+                        new THREE.Vector3(-5.5, yOffset + Math.sin(seed) * 0.22, -2.5),
+                        new THREE.Vector3(-2.6, yOffset + 1.0 + Math.cos(seed + 1.2) * 0.25, -1.4),
+                        new THREE.Vector3(0.0, yOffset + Math.sin(seed + 2.2) * 0.32, -0.2),
+                        new THREE.Vector3(2.8, yOffset - 0.6 + Math.cos(seed + 3.2) * 0.24, 0.9),
+                        new THREE.Vector3(5.6, yOffset + Math.sin(seed + 4.0) * 0.2, 2.2)
+                    ], false, 'catmullrom', 0.5);
+                }
+
+                const ribbonDefs = [
+                    { color: 0xc1121f, opacity: 0.26, radius: 0.07, y: 0.8, speed: 0.22, seed: 0.4 },
+                    { color: 0x780000, opacity: 0.22, radius: 0.055, y: 0.05, speed: 0.18, seed: 1.7 },
+                    { color: 0xf2bb05, opacity: 0.20, radius: 0.048, y: -0.8, speed: 0.16, seed: 2.4 },
+                    { color: 0xfdf0d5, opacity: 0.15, radius: 0.036, y: 0.3, speed: 0.14, seed: 3.5 }
+                ];
+
+                const ribbons = ribbonDefs.map((def, index) => {
+                    const mat = new THREE.MeshBasicMaterial({
+                        color: def.color,
+                        transparent: true,
+                        opacity: def.opacity,
+                        side: THREE.DoubleSide,
+                        depthWrite: false,
+                        blending: THREE.AdditiveBlending
+                    });
+                    const geom = new THREE.TubeGeometry(makeCurve(def.seed, def.y), 46, def.radius, 8, false);
+                    const mesh = new THREE.Mesh(geom, mat);
+                    mesh.position.z = -index * 0.5;
+                    scene.add(mesh);
+                    return { mesh: mesh, def: def };
+                });
+
+                function createGlowSprite(color) {
+                    const size = 128;
+                    const cvs = document.createElement('canvas');
+                    cvs.width = size;
+                    cvs.height = size;
+                    const ctx = cvs.getContext('2d');
+                    const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+                    g.addColorStop(0, color);
+                    g.addColorStop(0.4, 'rgba(242,187,5,0.2)');
+                    g.addColorStop(1, 'rgba(242,187,5,0)');
+                    ctx.fillStyle = g;
+                    ctx.fillRect(0, 0, size, size);
+                    const tex = new THREE.CanvasTexture(cvs);
+                    const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false });
+                    const sp = new THREE.Sprite(mat);
+                    sp.userData.tex = tex;
+                    return sp;
+                }
+
+                const glowA = createGlowSprite('rgba(242,187,5,0.9)');
+                glowA.scale.set(5.2, 5.2, 1);
+                glowA.position.set(-2.2, 1.2, -4.8);
+                scene.add(glowA);
+
+                const glowB = createGlowSprite('rgba(193,18,31,0.9)');
+                glowB.scale.set(4.8, 4.8, 1);
+                glowB.position.set(2.5, -1.1, -4.6);
+                scene.add(glowB);
+
+                const curves = [makeCurve(0.5, 0.7), makeCurve(1.4, -0.1), makeCurve(2.4, -0.9)];
+                const particles = [];
+                for (let i = 0; i < 12; i += 1) {
+                    const material = new THREE.SpriteMaterial({
+                        color: i % 3 === 0 ? 0xf2bb05 : (i % 3 === 1 ? 0xfdf0d5 : 0xc1121f),
+                        transparent: true,
+                        opacity: 0.58,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false
+                    });
+                    const sprite = new THREE.Sprite(material);
+                    const size = 0.22 + (i % 3) * 0.05;
+                    sprite.scale.set(size, size, 1);
+                    scene.add(sprite);
+                    particles.push({
+                        sprite: sprite,
+                        curve: curves[i % curves.length],
+                        speed: 0.02 + (i % 4) * 0.004,
+                        offset: i / 12
+                    });
+                }
+
+                let pointerX = 0;
+                let pointerY = 0;
+                let targetPointerX = 0;
+                let targetPointerY = 0;
+                let frame = 0;
+
+                function resize() {
+                    const w = Math.max(hero.clientWidth, 1);
+                    const h = Math.max(hero.clientHeight, 1);
+                    renderer.setSize(w, h, false);
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                }
+
+                function handleMove(event) {
+                    const rect = hero.getBoundingClientRect();
+                    const nx = (event.clientX - rect.left) / Math.max(rect.width, 1) * 2 - 1;
+                    const ny = (event.clientY - rect.top) / Math.max(rect.height, 1) * 2 - 1;
+                    targetPointerX = Math.max(-1, Math.min(1, nx));
+                    targetPointerY = Math.max(-1, Math.min(1, -ny));
+                }
+
+                hero.addEventListener('pointermove', handleMove, { passive: true });
+                hero.addEventListener('pointerleave', function () {
+                    targetPointerX = 0;
+                    targetPointerY = 0;
+                }, { passive: true });
+
+                const ro = new ResizeObserver(resize);
+                ro.observe(hero);
+                resize();
+
+                function animate() {
+                    if (document.hidden) {
+                        requestAnimationFrame(animate);
+                        return;
+                    }
+
+                    frame += 1;
+                    const t = performance.now() * 0.001;
+
+                    pointerX += (targetPointerX - pointerX) * 0.05;
+                    pointerY += (targetPointerY - pointerY) * 0.05;
+
+                    camera.position.x += (pointerX * 0.26 - camera.position.x) * 0.04;
+                    camera.position.y += (pointerY * 0.2 - camera.position.y) * 0.04;
+                    camera.lookAt(0, 0, 0);
+
+                    if (frame % 2 === 0) {
+                        ribbons.forEach(function (r, index) {
+                            const def = r.def;
+                            r.mesh.geometry.dispose();
+                            r.mesh.geometry = new THREE.TubeGeometry(makeCurve(def.seed + t * def.speed, def.y), 42, def.radius, 8, false);
+                            r.mesh.rotation.z = Math.sin(t * 0.12 + index) * 0.08;
+                        });
+                    }
+
+                    particles.forEach(function (p, index) {
+                        const progress = (p.offset + t * p.speed) % 1;
+                        const point = p.curve.getPointAt(progress);
+                        p.sprite.position.set(point.x + Math.sin(t + index) * 0.04, point.y + Math.cos(t * 1.3 + index) * 0.05, point.z);
+                    });
+
+                    glowA.position.x = -2.2 + pointerX * 0.25;
+                    glowA.position.y = 1.2 + pointerY * 0.2 + Math.sin(t * 0.35) * 0.06;
+                    glowB.position.x = 2.5 + pointerX * 0.2;
+                    glowB.position.y = -1.1 + pointerY * 0.16 + Math.cos(t * 0.28) * 0.07;
+
+                    renderer.render(scene, camera);
+                    requestAnimationFrame(animate);
+                }
+
+                animate();
+            }
+
+            function initDynamicElements() {
+                const waNode = document.getElementById('footer-wa-display');
+                if (waNode) waNode.textContent = mahkotaConfig.waDisplay;
+
+                const addrNode = document.getElementById('footer-address');
+                if (addrNode) addrNode.innerHTML = mahkotaConfig.storeAddress.replace(/\n/g, '<br>');
+            }
+
+            function renderCatalog() {
+                const catalogContainer = document.getElementById('catalog-products-list');
+                const checkoutContainer = document.getElementById('checkout-products-list');
+                if (!catalogContainer || !checkoutContainer) return;
+
+                catalogContainer.innerHTML = '';
+                checkoutContainer.innerHTML = '';
+
+                mahkotaConfig.products.forEach((prod) => {
+                    const tagHtml = prod.tag ? '<span class="absolute top-4 right-4 bg-brand-yellow text-brand-dark font-extrabold text-[10px] px-2.5 py-1 rounded-full uppercase tracking-wider">' + prod.tag + '</span>' : '';
+                    
+                    let svgHtml = '';
+                    if (prod.imageUrl) {
+                        svgHtml = '<div class="w-full h-44 flex items-center justify-center overflow-hidden rounded-2xl bg-brand-cream/20 border border-gray-100 shadow-inner">'
+                            + '<img src="' + prod.imageUrl + '" alt="' + prod.name + '" class="object-cover w-full h-full hover:scale-105 transition-all duration-500">'
+                            + '</div>';
+                    } else if (prod.imageType === 'mustofa') {
+                        svgHtml = '<svg class="w-32 h-44 drop-shadow-lg" viewBox="0 0 100 130">'
+                            + '<path d="M15,10 C35,12 65,12 85,10 L82,115 C82,122 72,125 50,125 C28,125 18,122 18,115 Z" fill="#C1121F" />'
+                            + '<path d="M15,18 L85,18 L84,20 L16,20 Z" fill="#780000" />'
+                            + '<path d="M18,95 C30,105 70,105 82,95 L82,115 C82,122 72,125 50,125 C28,125 18,122 18,115 Z" fill="#F2BB05" />'
+                            + '<text x="50" y="58" font-family="sans-serif" font-weight="900" font-size="7" fill="#F2BB05" text-anchor="middle" letter-spacing="1">KENTANG</text>'
+                            + '<text x="50" y="68" font-family="sans-serif" font-weight="950" font-size="11" fill="#FFFFFF" text-anchor="middle">MUSTOFA</text>'
+                            + '<text x="50" y="76" font-family="sans-serif" font-weight="bold" font-size="5" fill="#FFFFFF" text-anchor="middle">Varian: ' + prod.variant.toUpperCase() + '</text>'
+                            + '<circle cx="28" cy="110" r="5" fill="#FFFFFF" />'
+                            + '<text x="28" y="112" font-family="sans-serif" font-weight="bold" font-size="4" fill="#008000" text-anchor="middle">حلال</text>'
+                            + '</svg>';
+                    } else if (prod.imageType === 'sambal') {
+                        svgHtml = '<svg class="w-28 h-44 drop-shadow-lg" viewBox="0 0 80 120">'
+                            + '<path d="M15,35 C15,35 15,25 22,25 L58,25 C65,25 65,35 65,35 L65,105 C65,115 55,115 40,115 C25,115 15,115 15,105 Z" fill="#780000" opacity="0.95" />'
+                            + '<rect x="22" y="12" width="36" height="13" rx="3" fill="#FFFFFF" />'
+                            + '<path d="M17,40 C20,42 60,38 63,40 L63,103 C63,110 50,113 40,113 C30,113 17,110 17,103 Z" fill="#4A0000" />'
+                            + '<rect x="15" y="45" width="50" height="45" fill="#F2BB05" />'
+                            + '<g transform="translate(34, 48) scale(0.12)">'
+                            + '<path d="M15,75 L85,75 L80,85 L20,85 Z" fill="#C1121F" />'
+                            + '<path d="M15,75 L12,40 L16,40 L18,70 Z" fill="#C1121F" />'
+                            + '<path d="M32,75 L28,30 L32,30 L34,70 Z" fill="#C1121F" />'
+                            + '<path d="M50,75 L50,18 L53,22 L47,22 Z" fill="#C1121F" />'
+                            + '</g>'
+                            + '<text x="40" y="68" font-family="sans-serif" font-weight="bold" font-size="5" fill="#C1121F" text-anchor="middle">SAMBEL</text>'
+                            + '<text x="40" y="76" font-family="sans-serif" font-weight="900" font-size="6.5" fill="#C1121F" text-anchor="middle">' + prod.variant.toUpperCase() + '</text>'
+                            + '<text x="40" y="84" font-family="sans-serif" font-weight="bold" font-size="3" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.5">NETTO: ' + prod.weight.toUpperCase() + '</text>'
+                            + '</svg>';
+                    } else { // cookies
+                        svgHtml = '<svg class="w-32 h-44 drop-shadow-lg" viewBox="0 0 100 120">'
+                            + '<rect x="20" y="25" width="60" height="85" rx="10" fill="#EAEAEA" opacity="0.6" stroke="#CCCCCC" stroke-width="2" />'
+                            + '<ellipse cx="50" cy="25" rx="30" ry="10" fill="#F2BB05" />'
+                            + '<rect x="25" y="45" width="50" height="40" rx="3" fill="#C1121F" />'
+                            + '<text x="50" y="58" font-family="sans-serif" font-weight="black" font-size="5" fill="#FFFFFF" text-anchor="middle">MAHKOTA</text>'
+                            + '<text x="50" y="68" font-family="sans-serif" font-weight="black" font-size="9" fill="#F2BB05" text-anchor="middle">COOKIES</text>'
+                            + '<text x="50" y="78" font-family="sans-serif" font-weight="bold" font-size="4.5" fill="#FFFFFF" text-anchor="middle">' + prod.variant.toUpperCase() + '</text>'
+                            + '<circle cx="35" cy="100" r="4.5" fill="#F2BB05" />'
+                            + '<circle cx="50" cy="102" r="4.5" fill="#F2BB05" />'
+                            + '<circle cx="65" cy="100" r="4.5" fill="#F2BB05" />'
+                            + '</svg>';
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'prod-card bg-white rounded-3xl border border-gray-100 shadow-md overflow-hidden hover:shadow-xl transition-all';
+                    card.setAttribute('data-category', prod.category);
+                    card.innerHTML = '<div class="p-6 bg-brand-cream/40 flex justify-center relative">'
+                        + svgHtml
+                        + tagHtml
+                        + '</div>'
+                        + '<div class="p-6 space-y-4">'
+                        + '<h3 class="text-xl font-extrabold text-brand-dark">' + prod.name + '</h3>'
+                        + '<p class="text-sm text-gray-600 line-clamp-2">' + prod.description + '</p>'
+                        + '<div class="flex items-center justify-between border-t border-gray-100 pt-4">'
+                        + '<div>'
+                        + '<span class="text-xs text-gray-400 block">' + (prod.weight ? 'Kemasan ' + prod.weight : 'Pilihan Kemasan') + '</span>'
+                        + '<span class="text-lg font-black text-brand-red">' + prod.priceDisplay + '</span>'
+                        + '</div>'
+                        + '<a href="#pesan" onclick="selectProductPreset(\'' + prod.name.replace(/'/g, "\\'") + '\')" class="bg-brand-red hover:bg-brand-darkred text-white p-3 rounded-full transition-all">'
+                        + '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>'
+                        + '</a>'
+                        + '</div>'
+                        + '</div>';
+                    
+                    catalogContainer.appendChild(card);
+
+                    const row = document.createElement('div');
+                    row.className = 'flex flex-col sm:flex-row sm:items-center justify-between bg-white p-4 rounded-xl shadow-sm border border-gray-100 gap-4';
+                    row.innerHTML = '<div>'
+                        + '<h4 class="font-bold text-gray-800">' + prod.name + '</h4>'
+                        + '<span class="text-sm font-semibold text-brand-red">' + formatRupiah(prod.price) + ' / ' + prod.unit + '</span>'
+                        + '</div>'
+                        + '<div class="flex items-center space-x-3">'
+                        + '<button onclick="changeQty(\'' + prod.id + '\', -1)" aria-label="Kurangi jumlah ' + prod.name + '" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-700 hover:bg-brand-red hover:text-white transition-all text-lg">-</button>'
+                        + '<span id="qty-' + prod.id + '" class="w-10 text-center font-extrabold text-lg text-brand-dark" aria-live="polite">0</span>'
+                        + '<button onclick="changeQty(\'' + prod.id + '\', 1)" aria-label="Tambah jumlah ' + prod.name + '" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center font-bold text-gray-700 hover:bg-brand-red hover:text-white transition-all text-lg">+</button>'
+                        + '</div>';
+
+                    checkoutContainer.appendChild(row);
+                });
+            }
+
+            function setupMobileMenu() {
+                const mobileBtn = document.getElementById('mobile-menu-btn');
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (!mobileBtn || !mobileMenu) return;
+
+                mobileBtn.addEventListener('click', function () {
+                    const isHidden = mobileMenu.classList.contains('hidden');
+                    mobileMenu.classList.toggle('hidden');
+                    mobileBtn.setAttribute('aria-expanded', !isHidden);
+                });
+
+                const links = mobileMenu.querySelectorAll('a');
+                links.forEach((link) => {
+                    link.addEventListener('click', function () {
+                        mobileMenu.classList.add('hidden');
+                        mobileBtn.setAttribute('aria-expanded', 'false');
+                    });
+                });
+            }
+
+            function setupBackToTop() {
+                const backToTopBtn = document.getElementById('back-to-top');
+                if (!backToTopBtn) return;
+
+                window.addEventListener('scroll', function() {
+                    if (window.scrollY > 500) {
+                        backToTopBtn.classList.remove('opacity-0', 'invisible');
+                        backToTopBtn.classList.add('opacity-100', 'visible');
+                    } else {
+                        backToTopBtn.classList.remove('opacity-100', 'visible');
+                        backToTopBtn.classList.add('opacity-0', 'invisible');
+                    }
+                }, { passive: true });
+            }
+
+            function setupModalClose() {
+                const modal = document.getElementById('notification-modal');
+                if (!modal) return;
+
+                modal.addEventListener('click', function (event) {
+                    if (event.target === modal) closeNotification();
+                });
+
+                document.addEventListener('keydown', function (event) {
+                    if (event.key === 'Escape') closeNotification();
+                });
+            }
+
+            window.showCityDetail = showCityDetail;
+            window.filterProducts = filterProducts;
+            window.changeQty = changeQty;
+            window.selectProductPreset = selectProductPreset;
+            window.sendWhatsAppOrder = sendWhatsAppOrder;
+            window.showNotification = showNotification;
+            window.closeNotification = closeNotification;
+
+            document.addEventListener('DOMContentLoaded', function () {
+                setupMobileMenu();
+                setupModalClose();
+                renderCatalog();
+                initDynamicElements();
+                setupRevealAnimations();
+                setupCardTilt();
+                setupFounderRouteAnimation();
+                setupSectionParticles();
+                setupHeroThreeFlow();
+                setupBackToTop();
+                showCityDetail('pekanbaru');
+                filterProducts('all');
+                updateCartSummary();
+            });
+        })();
+    </script>
+</body>
+</html>
