@@ -104,6 +104,13 @@
                         <span>➕ Tambah</span>
                     </button>
                 </div>
+                <!-- Column Headers -->
+                <div class="grid grid-cols-12 gap-2 px-1 hidden" id="custom-col-headers">
+                    <div class="col-span-4 text-[9px] font-bold uppercase tracking-wider text-gray-400">Nama Produk</div>
+                    <div class="col-span-2 text-[9px] font-bold uppercase tracking-wider text-gray-400 text-center">Berat (g)</div>
+                    <div class="col-span-4 text-[9px] font-bold uppercase tracking-wider text-gray-400 text-center">P × L × T (cm)</div>
+                    <div class="col-span-2 text-[9px] font-bold uppercase tracking-wider text-gray-400 text-center">Qty</div>
+                </div>
                 <div id="custom-products-container" class="space-y-3">
                     <!-- Dynamic rows insert here -->
                 </div>
@@ -187,6 +194,7 @@
     // Add custom product row helper
     function addCustomRow() {
         const container = document.getElementById('custom-products-container');
+        const headers = document.getElementById('custom-col-headers');
         const rowId = 'row-' + Math.random().toString(36).substring(2, 7);
         
         const rowHtml = `
@@ -209,6 +217,7 @@
         </div>`;
         
         container.insertAdjacentHTML('beforeend', rowHtml);
+        headers.classList.remove('hidden');
         calculateShipping();
     }
 
@@ -216,6 +225,11 @@
         const row = document.getElementById(rowId);
         if (row) {
             row.remove();
+            const container = document.getElementById('custom-products-container');
+            const headers = document.getElementById('custom-col-headers');
+            if (container.querySelectorAll('.custom-item-row').length === 0) {
+                headers.classList.add('hidden');
+            }
             calculateShipping();
         }
     }
