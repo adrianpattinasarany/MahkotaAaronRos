@@ -158,6 +158,7 @@ const adminHtml = `<!DOCTYPE html>
             <button onclick="switchTab('travel')" id="tab-travel" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Perjalanan Rasa</button>
             <button onclick="switchTab('products')" id="tab-products" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Katalog Produk</button>
             <button onclick="switchTab('media')" id="tab-media" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Galeri Media</button>
+            <button onclick="switchTab('invoice')" id="tab-invoice" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Invoice TipTop</button>
         </div>
         <!-- Notification Banner -->
         <div id="toast" class="fixed top-24 right-6 glass-panel text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-[-20px] opacity-0 pointer-events-none z-50">
@@ -287,6 +288,11 @@ const adminHtml = `<!DOCTYPE html>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6" id="media-grid">
                 <!-- Loaded dynamically -->
             </div>
+        </section>
+        
+        <!-- INVOICE TAB -->
+        <section id="sect-invoice" class="hidden space-y-6">
+            <iframe src="/invoice" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
         </section>
     </main>
 
@@ -500,6 +506,7 @@ const adminHtml = `<!DOCTYPE html>
             document.getElementById('sect-travel').classList.add('hidden');
             document.getElementById('sect-products').classList.add('hidden');
             document.getElementById('sect-media').classList.add('hidden');
+            document.getElementById('sect-invoice').classList.add('hidden');
 
             document.getElementById('sect-' + tabId).classList.remove('hidden');
 
@@ -889,6 +896,16 @@ const server = http.createServer((req, res) => {
         } else {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('index.html not found');
+        }
+    } else if (method === 'GET' && (url === '/invoice' || url === '/invoice.html')) {
+        // Serve invoice.html
+        const invoiceFile = path.join(__dirname, 'invoice.html');
+        if (fs.existsSync(invoiceFile)) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end(fs.readFileSync(invoiceFile, 'utf8'));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('invoice.html not found');
         }
     } else if (method === 'GET' && url === '/api/config') {
         // GET configuration json
