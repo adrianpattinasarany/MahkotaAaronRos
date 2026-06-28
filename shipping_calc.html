@@ -44,6 +44,15 @@
 <body class="font-sans p-2">
 
 <div class="max-w-6xl mx-auto space-y-6">
+    <!-- Local File Mode Warning Banner -->
+    <div id="localWarningBanner" class="hidden bg-yellow-950/80 border border-brand-yellow/30 p-4 rounded-2xl flex items-start space-x-3 text-xs text-brand-cream/90 shadow-lg">
+        <span class="text-lg">⚠️</span>
+        <div>
+            <h4 class="font-extrabold text-brand-yellow">Jalur Offline / File Lokal Terdeteksi</h4>
+            <p class="mt-1 leading-relaxed text-gray-300">Anda sedang membuka halaman ini langsung sebagai file lokal. Kalkulator shipping real-time membutuhkan API proxy server agar terhubung ke RajaOngkir. Silakan jalankan server dengan mengeklik dua kali file <code class="bg-black/30 px-1 py-0.5 rounded text-brand-yellow font-bold">run_admin.bat</code> di folder proyek, lalu buka di browser Anda: <a href="http://localhost:3000" target="_blank" class="underline hover:text-brand-yellow">http://localhost:3000</a>.</p>
+        </div>
+    </div>
+
     <!-- Main Form Grid -->
     <div class="grid lg:grid-cols-12 gap-6">
         <!-- Left: Input Items -->
@@ -235,6 +244,13 @@
     }
 
     async function initShippingCalc() {
+        if (window.location.protocol === 'file:') {
+            document.getElementById('localWarningBanner').classList.remove('hidden');
+            document.getElementById('provinceSelect').innerHTML = '<option value="">-- Jalankan run_admin.bat --</option>';
+            document.getElementById('citySelect').innerHTML = '<option value="">-- Jalankan run_admin.bat --</option>';
+            return;
+        }
+
         try {
             const res = await fetch('/api/shipping/provinces');
             provinces = await res.json();
@@ -246,7 +262,7 @@
             });
         } catch (err) {
             console.error("Gagal memuat provinsi:", err);
-            document.getElementById('provinceSelect').innerHTML = '<option value="">-- Gagal memuat provinsi --</option>';
+            document.getElementById('provinceSelect').innerHTML = '<option value="">-- Gagal (Server Offline) --</option>';
         }
     }
 
