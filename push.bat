@@ -20,18 +20,18 @@ if not exist .git (
     echo [INFO] Git repository is not initialized. Initializing...
     git init
     git branch -M main
-    git remote add origin https://github.com/adrianpattinasarany/MahkotaAaronRos
-    echo [INFO] Git repository initialized and remote origin set to https://github.com/adrianpattinasarany/MahkotaAaronRos
+    git remote add origin https://adrianpattinasarany@github.com/adrianpattinasarany/MahkotaAaronRos.git
+    echo [INFO] Git repository initialized and remote origin set to https://adrianpattinasarany@github.com/adrianpattinasarany/MahkotaAaronRos.git
 ) else (
     echo [INFO] Git repository already initialized.
     :: Check if remote origin is set, if not add it
     git remote get-url origin >nul 2>nul
     if %errorlevel% neq 0 (
         echo [INFO] Adding remote origin...
-        git remote add origin https://github.com/adrianpattinasarany/MahkotaAaronRos
+        git remote add origin https://adrianpattinasarany@github.com/adrianpattinasarany/MahkotaAaronRos.git
     ) else (
         :: Update remote origin URL just in case
-        git remote set-url origin https://github.com/adrianpattinasarany/MahkotaAaronRos
+        git remote set-url origin https://adrianpattinasarany@github.com/adrianpattinasarany/MahkotaAaronRos.git
     )
 )
 
