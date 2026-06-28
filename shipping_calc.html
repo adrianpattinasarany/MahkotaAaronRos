@@ -7,6 +7,14 @@
     <!-- Google Fonts Outfit -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
+    <script>
+        // Silence Tailwind Play CDN production warning
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            origWarn.apply(console, args);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -253,7 +261,9 @@
 
         try {
             const res = await fetch('/api/shipping/provinces');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             provinces = await res.json();
+            if (!Array.isArray(provinces)) throw new Error(provinces.error || 'Invalid response type');
             
             const provSelect = document.getElementById('provinceSelect');
             provSelect.innerHTML = '<option value="">-- Pilih Provinsi --</option>';
@@ -262,7 +272,7 @@
             });
         } catch (err) {
             console.error("Gagal memuat provinsi:", err);
-            document.getElementById('provinceSelect').innerHTML = '<option value="">-- Gagal (Server Offline) --</option>';
+            document.getElementById('provinceSelect').innerHTML = '<option value="">-- Gagal memuat provinsi --</option>';
         }
     }
 
@@ -278,7 +288,9 @@
 
         try {
             const res = await fetch(`/api/shipping/cities?province=${provinceId}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             cities = await res.json();
+            if (!Array.isArray(cities)) throw new Error(cities.error || 'Invalid response type');
             
             citySelect.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
             cities.forEach(c => {
@@ -405,11 +417,13 @@
                 })
             });
             
+            if (!costRes.ok) throw new Error(`HTTP ${costRes.status}`);
             const results = await costRes.json();
+            if (!Array.isArray(results)) throw new Error(results.error || 'Invalid response type');
             renderCostResults(results);
         } catch (err) {
             console.error("Gagal menghitung ongkos kirim:", err);
-            document.getElementById('costResults').innerHTML = '<p class="text-red-500 italic text-center">Gagal menghubungi API RajaOngkir. Cek koneksi Anda.</p>';
+            document.getElementById('costResults').innerHTML = '<p class="text-red-500 italic text-center">Gagal menghitung ongkos kirim. Cek koneksi Anda.</p>';
         }
     }
 
@@ -417,7 +431,7 @@
         const container = document.getElementById('costResults');
         container.innerHTML = '';
         
-        if (!results || results.length === 0 || !results[0].costs || results[0].costs.length === 0) {
+        if (!Array.isArray(results) || results.length === 0 || !results[0].costs || results[0].costs.length === 0) {
             container.innerHTML = '<p class="text-gray-400 italic text-center">Tidak ada layanan kurir yang tersedia untuk tujuan ini.</p>';
             return;
         }

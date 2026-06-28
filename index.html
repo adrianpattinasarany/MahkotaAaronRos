@@ -10,6 +10,14 @@
     <meta name="mobile-web-app-capable" content="yes">
     <title>Mahkota Aaronros - Kuliner Halal Premium Tangerang Selatan</title>
     <!-- Tailwind CSS CDN -->
+    <script>
+        // Silence Tailwind Play CDN production warning
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            origWarn.apply(console, args);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -857,7 +865,7 @@
             <div class="text-center max-w-3xl mx-auto space-y-4">
                 <span class="text-brand-red font-bold uppercase tracking-wider text-sm block">🛠️ Aplikasi Gratis Untuk UMKM</span>
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark" id="app-title">Aplikasi UMKM Mahkota</h2>
-                <p class="text-gray-600 text-sm md:text-base animate-fade-in" id="app-description">Dua aplikasi gratis untuk membantu operasional UMKM Anda: pembuat invoice otomatis dari Excel TipTop, dan kalkulator pengemasan serta ongkos kirim real-time via RajaOngkir.</p>
+                <p class="text-gray-600 text-sm md:text-base animate-fade-in" id="app-description">Aplikasi gratis untuk membantu operasional UMKM Anda: pembuat invoice otomatis Excel, kalkulator kemasan & ongkir, generator QR code, serta pembuat barcode.</p>
             </div>
             
             <!-- App Switcher Tabs -->
@@ -866,6 +874,7 @@
                     <button onclick="switchApp('invoice')" id="btn-app-invoice" class="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white">📝 Invoice TipTop</button>
                     <button onclick="switchApp('shipping')" id="btn-app-shipping" class="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red">📦 Kalkulator Shipping</button>
                     <button onclick="switchApp('qrcode')" id="btn-app-qrcode" class="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red">📱 Generator QR Code</button>
+                    <button onclick="switchApp('barcode')" id="btn-app-barcode" class="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red">🏷️ Generator Barcode</button>
                 </div>
             </div>
             
@@ -882,31 +891,38 @@
                 
                 const btnInvoice = document.getElementById('btn-app-invoice');
                 const btnShipping = document.getElementById('btn-app-shipping');
+                const btnQrcode = document.getElementById('btn-app-qrcode');
+                const btnBarcode = document.getElementById('btn-app-barcode');
+                
+                const resetButtons = () => {
+                    btnInvoice.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                    btnShipping.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                    btnQrcode.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                    btnBarcode.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                };
+
+                resetButtons();
                 
                 if (appType === 'invoice') {
                     iframe.src = "./invoice.html";
                     title.textContent = "Pembuat Invoice TipTop";
                     desc.textContent = "Alat bantu khusus mitra dan distributor retail untuk membuat invoice format Microsoft Word (.docx) secara otomatis dari laporan penjualan Excel TipTop Anda.";
-                    
                     btnInvoice.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
-                    btnShipping.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
-                    document.getElementById('btn-app-qrcode').className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
                 } else if (appType === 'shipping') {
                     iframe.src = "./shipping_calc.html";
                     title.textContent = "Kalkulator Pengemasan & Ongkos Kirim";
                     desc.textContent = "Kalkulator pengepakan kardus otomatis bagi seluruh UMKM untuk menentukan ukuran box terbaik, estimasi berat volumetrik, dan ongkos kirim real-time JNE/POS/TIKI via RajaOngkir.";
-                    
                     btnShipping.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
-                    btnInvoice.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
-                    document.getElementById('btn-app-qrcode').className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
                 } else if (appType === 'qrcode') {
                     iframe.src = "./qrcode.html";
                     title.textContent = "Generator QR Code Gratis";
                     desc.textContent = "Buat QR Code instan untuk WhatsApp bisnis, website, link katalog, atau teks produk. Bisa diunduh sebagai PNG untuk dicetak di kemasan, brosur, atau banner.";
-                    
-                    document.getElementById('btn-app-qrcode').className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
-                    btnInvoice.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
-                    btnShipping.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                    btnQrcode.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
+                } else if (appType === 'barcode') {
+                    iframe.src = "./barcode.html";
+                    title.textContent = "Generator Barcode Gratis";
+                    desc.textContent = "Buat Barcode standar retail (EAN-13, CODE-128, dll) secara instan untuk kode produk UMKM Anda. Bisa diunduh sebagai PNG untuk dicetak langsung pada label stiker kemasan.";
+                    btnBarcode.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
                 }
             }
         </script>
@@ -1049,7 +1065,7 @@
             const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             if (!isMobile && !reducedMotion) {
                 const script = document.createElement('script');
-                script.src = 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js';
+                script.src = 'https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js';
                 script.async = true;
                 script.onload = function() {
                     window.THREE_LOADED = true;

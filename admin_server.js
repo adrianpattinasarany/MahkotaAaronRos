@@ -5,6 +5,202 @@ const path = require('path');
 
 const RAJAONGKIR_KEY = 'omp0ZgIf4281a2c8765a1bd4NvsskRkz';
 
+const FALLBACK_PROVINCES = [
+    { province_id: "1", province: "Bali" },
+    { province_id: "2", province: "Bangka Belitung" },
+    { province_id: "3", province: "Banten" },
+    { province_id: "4", province: "Bengkulu" },
+    { province_id: "5", province: "DI Yogyakarta" },
+    { province_id: "6", province: "DKI Jakarta" },
+    { province_id: "7", province: "Gorontalo" },
+    { province_id: "8", province: "Jambi" },
+    { province_id: "9", province: "Jawa Barat" },
+    { province_id: "10", province: "Jawa Tengah" },
+    { province_id: "11", province: "Jawa Timur" },
+    { province_id: "12", province: "Kalimantan Barat" },
+    { province_id: "13", province: "Kalimantan Selatan" },
+    { province_id: "14", province: "Kalimantan Tengah" },
+    { province_id: "15", province: "Kalimantan Timur" },
+    { province_id: "16", province: "Kalimantan Utara" },
+    { province_id: "17", province: "Kepulauan Riau" },
+    { province_id: "18", province: "Lampung" },
+    { province_id: "19", province: "Maluku" },
+    { province_id: "20", province: "Maluku Utara" },
+    { province_id: "21", province: "Nanggroe Aceh Darussalam (NAD)" },
+    { province_id: "22", province: "Nusa Tenggara Barat (NTB)" },
+    { province_id: "23", province: "Nusa Tenggara Timur (NTT)" },
+    { province_id: "24", province: "Papua" },
+    { province_id: "25", province: "Papua Barat" },
+    { province_id: "26", province: "Riau" },
+    { province_id: "27", province: "Sulawesi Barat" },
+    { province_id: "28", province: "Sulawesi Selatan" },
+    { province_id: "29", province: "Sulawesi Tengah" },
+    { province_id: "30", province: "Sulawesi Tenggara" },
+    { province_id: "31", province: "Sulawesi Utara" },
+    { province_id: "32", province: "Sumatera Barat" },
+    { province_id: "33", province: "Sumatera Selatan" },
+    { province_id: "34", province: "Sumatera Utara" }
+];
+
+const FALLBACK_CITIES = {
+    "1": [{ city_id: "17", city_name: "Denpasar", type: "Kota" }, { city_id: "114", city_name: "Badung", type: "Kabupaten" }],
+    "2": [{ city_id: "330", city_name: "Pangkal Pinang", type: "Kota" }],
+    "3": [
+        { city_id: "444", city_name: "Tangerang Selatan", type: "Kota" },
+        { city_id: "457", city_name: "Tangerang", type: "Kota" },
+        { city_id: "455", city_name: "Tangerang", type: "Kabupaten" },
+        { city_id: "417", city_name: "Serang", type: "Kota" },
+        { city_id: "106", city_name: "Cilegon", type: "Kota" }
+    ],
+    "4": [{ city_id: "68", city_name: "Bengkulu", type: "Kota" }],
+    "5": [{ city_id: "501", city_name: "Yogyakarta", type: "Kota" }, { city_id: "39", city_name: "Bantul", type: "Kabupaten" }, { city_id: "412", city_name: "Sleman", type: "Kabupaten" }],
+    "6": [
+        { city_id: "151", city_name: "Jakarta Barat", type: "Kota" },
+        { city_id: "152", city_name: "Jakarta Pusat", type: "Kota" },
+        { city_id: "153", city_name: "Jakarta Selatan", type: "Kota" },
+        { city_id: "154", city_name: "Jakarta Timur", type: "Kota" },
+        { city_id: "155", city_name: "Jakarta Utara", type: "Kota" }
+    ],
+    "7": [{ city_id: "135", city_name: "Gorontalo", type: "Kota" }],
+    "8": [{ city_id: "156", city_name: "Jambi", type: "Kota" }],
+    "9": [
+        { city_id: "54", city_name: "Bandung", type: "Kota" },
+        { city_id: "55", city_name: "Bandung", type: "Kabupaten" },
+        { city_id: "78", city_name: "Bogor", type: "Kota" },
+        { city_id: "79", city_name: "Bogor", type: "Kabupaten" },
+        { city_id: "115", city_name: "Depok", type: "Kota" },
+        { city_id: "57", city_name: "Bekasi", type: "Kota" },
+        { city_id: "58", city_name: "Bekasi", type: "Kabupaten" }
+    ],
+    "10": [
+        { city_id: "398", city_name: "Semarang", type: "Kota" },
+        { city_id: "445", city_name: "Surakarta (Solo)", type: "Kota" },
+        { city_id: "374", city_name: "Magelang", type: "Kota" }
+    ],
+    "11": [
+        { city_id: "442", city_name: "Surabaya", type: "Kota" },
+        { city_id: "256", city_name: "Malang", type: "Kota" },
+        { city_id: "409", city_name: "Sidoarjo", type: "Kabupaten" }
+    ],
+    "12": [{ city_id: "364", city_name: "Pontianak", type: "Kota" }],
+    "13": [{ city_id: "47", city_name: "Banjarmasin", type: "Kota" }],
+    "14": [{ city_id: "326", city_name: "Palangka Raya", type: "Kota" }],
+    "15": [{ city_id: "387", city_name: "Samarinda", type: "Kota" }, { city_id: "42", city_name: "Balikpapan", type: "Kota" }],
+    "16": [{ city_id: "461", city_name: "Tanjung Selor", type: "Kabupaten" }],
+    "17": [{ city_id: "48", city_name: "Batam", type: "Kota" }, { city_id: "462", city_name: "Tanjung Pinang", type: "Kota" }],
+    "18": [{ city_id: "50", city_name: "Bandar Lampung", type: "Kota" }],
+    "19": [{ city_id: "19", city_name: "Ambon", type: "Kota" }],
+    "20": [{ city_id: "464", city_name: "Ternate", type: "Kota" }],
+    "21": [{ city_id: "43", city_name: "Banda Aceh", type: "Kota" }],
+    "22": [{ city_id: "269", city_name: "Mataram", type: "Kota" }],
+    "23": [{ city_id: "219", city_name: "Kupang", type: "Kota" }],
+    "24": [{ city_id: "161", city_name: "Jayapura", type: "Kota" }],
+    "25": [{ city_id: "249", city_name: "Manokwari", type: "Kabupaten" }],
+    "26": [{ city_id: "338", city_name: "Pekanbaru", type: "Kota" }, { city_id: "119", city_name: "Duri", type: "Kabupaten" }],
+    "27": [{ city_id: "250", city_name: "Mamuju", type: "Kabupaten" }],
+    "28": [{ city_id: "252", city_name: "Makassar", type: "Kota" }],
+    "29": [{ city_id: "327", city_name: "Palu", type: "Kota" }],
+    "30": [{ city_id: "196", city_name: "Kendari", type: "Kota" }],
+    "31": [{ city_id: "258", city_name: "Manado", type: "Kota" }],
+    "32": [{ city_id: "328", city_name: "Padang", type: "Kota" }],
+    "33": [{ city_id: "329", city_name: "Palembang", type: "Kota" }],
+    "34": [{ city_id: "278", city_name: "Medan", type: "Kota" }]
+};
+
+function getFallbackData(pathUrl, method, data) {
+    if (pathUrl.startsWith('/province')) {
+        return FALLBACK_PROVINCES;
+    }
+    if (pathUrl.startsWith('/city')) {
+        let provinceId = null;
+        const provMatch = pathUrl.match(/[?&]province=(\d+)/);
+        if (provMatch) {
+            provinceId = provMatch[1];
+        }
+        if (provinceId && FALLBACK_CITIES[provinceId]) {
+            return FALLBACK_CITIES[provinceId];
+        }
+        let allCities = [];
+        for (const provId in FALLBACK_CITIES) {
+            allCities = allCities.concat(FALLBACK_CITIES[provId]);
+        }
+        return allCities;
+    }
+    if (pathUrl.startsWith('/cost')) {
+        const dest = data ? data.destination : "444";
+        const weight = data ? data.weight : 1000;
+        const courier = (data && data.courier) ? data.courier : "jne";
+
+        let provinceId = "9";
+        for (const [provId, cities] of Object.entries(FALLBACK_CITIES)) {
+            if (cities.some(c => String(c.city_id) === String(dest))) {
+                provinceId = provId;
+                break;
+            }
+        }
+
+        const weightInKg = Math.ceil(weight / 1000) || 1;
+        let regCost = 25000;
+        let okeCost = 20000;
+        let yesCost = 45000;
+
+        if (provinceId === '3' || provinceId === '6') {
+            regCost = 9000;
+            okeCost = 8000;
+            yesCost = 15000;
+        } else if (provinceId === '9') {
+            regCost = 11000;
+            okeCost = 9000;
+            yesCost = 18000;
+        } else if (['10', '11'].includes(provinceId)) {
+            regCost = 18000;
+            okeCost = 15000;
+            yesCost = 30000;
+        } else if (['18', '26', '32', '33', '34', '17'].includes(provinceId)) {
+            regCost = 22000;
+            okeCost = 18000;
+            yesCost = 38000;
+        } else if (['1', '12', '13', '14', '15', '16'].includes(provinceId)) {
+            regCost = 32000;
+            okeCost = 26000;
+            yesCost = 55000;
+        } else {
+            regCost = 45000;
+            okeCost = 38000;
+            yesCost = 75000;
+        }
+
+        const finalReg = regCost * weightInKg;
+        const finalOke = okeCost * weightInKg;
+        const finalYes = yesCost * weightInKg;
+
+        return [
+            {
+                code: courier,
+                name: courier.toUpperCase(),
+                costs: [
+                    {
+                        service: "REG",
+                        description: "Layanan Reguler (Offline Fallback)",
+                        cost: [{ value: finalReg, etd: "2-3", note: "" }]
+                    },
+                    {
+                        service: "OKE",
+                        description: "Ekonomis (Offline Fallback)",
+                        cost: [{ value: finalOke, etd: "3-5", note: "" }]
+                    },
+                    {
+                        service: "YES",
+                        description: "Yakin Esok Sampai (Offline Fallback)",
+                        cost: [{ value: finalYes, etd: "1-1", note: "" }]
+                    }
+                ]
+            }
+        ];
+    }
+    return [];
+}
+
 function requestRajaOngkir(pathUrl, method, data = null) {
     return new Promise((resolve, reject) => {
         const isPost = method === 'POST';
@@ -37,16 +233,22 @@ function requestRajaOngkir(pathUrl, method, data = null) {
                         resolve(parsed.rajaongkir.results);
                     } else {
                         const errMsg = (parsed.rajaongkir && parsed.rajaongkir.status && parsed.rajaongkir.status.description) || 'RajaOngkir error';
-                        reject(new Error(errMsg));
+                        throw new Error(errMsg);
                     }
                 } catch (e) {
-                    reject(new Error('Invalid JSON response from RajaOngkir'));
+                    console.warn(`[WARNING] RajaOngkir API returned error, using fallback. Error: ${e.message}`);
+                    resolve(getFallbackData(pathUrl, method, data));
                 }
             });
         });
 
         req.on('error', (err) => {
-            reject(err);
+            console.warn(`[WARNING] RajaOngkir connection failed, using fallback. Error: ${err.message}`);
+            resolve(getFallbackData(pathUrl, method, data));
+        });
+
+        req.setTimeout(5000, () => {
+            req.destroy(new Error('Connection timeout to RajaOngkir'));
         });
 
         if (isPost && postData) {
@@ -119,6 +321,14 @@ const adminHtml = `<!DOCTYPE html>
     <!-- Google Fonts Outfit -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN -->
+    <script>
+        // Silence Tailwind Play CDN production warning
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+            if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+            origWarn.apply(console, args);
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -215,6 +425,7 @@ const adminHtml = `<!DOCTYPE html>
             <button onclick="switchTab('invoice')" id="tab-invoice" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Invoice TipTop</button>
             <button onclick="switchTab('shipping')" id="tab-shipping" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Kalkulator Shipping</button>
             <button onclick="switchTab('qrcode')" id="tab-qrcode" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Generator QR Code</button>
+            <button onclick="switchTab('barcode')" id="tab-barcode" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Generator Barcode</button>
         </div>
         <!-- Notification Banner -->
         <div id="toast" class="fixed top-24 right-6 glass-panel text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-[-20px] opacity-0 pointer-events-none z-50">
@@ -359,6 +570,11 @@ const adminHtml = `<!DOCTYPE html>
         <!-- QRCODE TAB -->
         <section id="sect-qrcode" class="hidden space-y-6">
             <iframe src="/qrcode" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
+        </section>
+        
+        <!-- BARCODE TAB -->
+        <section id="sect-barcode" class="hidden space-y-6">
+            <iframe src="/barcode" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
         </section>
     </main>
 
@@ -575,6 +791,7 @@ const adminHtml = `<!DOCTYPE html>
             document.getElementById('sect-invoice').classList.add('hidden');
             document.getElementById('sect-shipping').classList.add('hidden');
             document.getElementById('sect-qrcode').classList.add('hidden');
+            document.getElementById('sect-barcode').classList.add('hidden');
 
             document.getElementById('sect-' + tabId).classList.remove('hidden');
 
@@ -932,7 +1149,11 @@ const server = http.createServer((req, res) => {
     const url = req.url;
     const method = req.method;
 
-    if (url.startsWith('/gambar/')) {
+    if (url === '/favicon.ico') {
+        res.writeHead(204, { 'Content-Type': 'image/x-icon' });
+        res.end();
+        return;
+    } else if (url.startsWith('/gambar/')) {
         const decodedUrl = decodeURIComponent(url);
         const filePath = path.join(__dirname, decodedUrl);
         const gambarDir = path.join(__dirname, 'gambar');
@@ -994,6 +1215,36 @@ const server = http.createServer((req, res) => {
         } else {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('qrcode.html not found');
+        }
+    } else if (method === 'GET' && url === '/qrcode.min.js') {
+        // Serve local qrcode.min.js library
+        const qrcodeLibFile = path.join(__dirname, 'qrcode.min.js');
+        if (fs.existsSync(qrcodeLibFile)) {
+            res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+            res.end(fs.readFileSync(qrcodeLibFile, 'utf8'));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('qrcode.min.js not found');
+        }
+    } else if (method === 'GET' && (url === '/barcode' || url === '/barcode.html')) {
+        // Serve barcode.html
+        const barcodeFile = path.join(__dirname, 'barcode.html');
+        if (fs.existsSync(barcodeFile)) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end(fs.readFileSync(barcodeFile, 'utf8'));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('barcode.html not found');
+        }
+    } else if (method === 'GET' && url === '/JsBarcode.all.min.js') {
+        // Serve local JsBarcode.all.min.js library
+        const barcodeLibFile = path.join(__dirname, 'JsBarcode.all.min.js');
+        if (fs.existsSync(barcodeLibFile)) {
+            res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
+            res.end(fs.readFileSync(barcodeLibFile, 'utf8'));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('JsBarcode.all.min.js not found');
         }
     } else if (method === 'GET' && url === '/api/shipping/provinces') {
         // RajaOngkir proxy: get provinces
