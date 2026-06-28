@@ -853,17 +853,52 @@
 
     <!-- APP INVOICE SECTION -->
     <section id="app" class="py-20 bg-brand-cream relative overflow-hidden border-t border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div class="text-center max-w-3xl mx-auto space-y-4">
                 <span class="text-brand-red font-bold uppercase tracking-wider text-sm block">⚙️ Aplikasi Internal UMKM</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark">Pembuat Invoice TipTop</h2>
-                <p class="text-gray-600">Alat bantu khusus mitra dan distributor retail untuk membuat invoice format Microsoft Word (.docx) secara otomatis dari laporan penjualan Excel TipTop Anda.</p>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-dark" id="app-title">Pembuat Invoice TipTop</h2>
+                <p class="text-gray-600 text-sm md:text-base animate-fade-in" id="app-description">Alat bantu khusus mitra dan distributor retail untuk membuat invoice format Microsoft Word (.docx) secara otomatis dari laporan penjualan Excel TipTop Anda.</p>
             </div>
             
-            <div class="w-full max-w-5xl mx-auto">
-                <iframe src="./invoice.html" class="w-full h-[650px] border-0 rounded-3xl overflow-hidden shadow-2xl bg-transparent"></iframe>
+            <!-- App Switcher Tabs -->
+            <div class="flex justify-center">
+                <div class="bg-white/80 p-1.5 rounded-full border border-gray-200 flex space-x-1 shadow-sm">
+                    <button onclick="switchApp('invoice')" id="btn-app-invoice" class="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white">📝 Invoice TipTop</button>
+                    <button onclick="switchApp('shipping')" id="btn-app-shipping" class="px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red">📦 Kalkulator Shipping</button>
+                </div>
+            </div>
+            
+            <div class="w-full max-w-5xl mx-auto animate-fade-in">
+                <iframe id="app-iframe" src="./invoice.html" class="w-full h-[650px] border-0 rounded-3xl overflow-hidden shadow-2xl bg-transparent"></iframe>
             </div>
         </div>
+        
+        <script>
+            function switchApp(appType) {
+                const iframe = document.getElementById('app-iframe');
+                const title = document.getElementById('app-title');
+                const desc = document.getElementById('app-description');
+                
+                const btnInvoice = document.getElementById('btn-app-invoice');
+                const btnShipping = document.getElementById('btn-app-shipping');
+                
+                if (appType === 'invoice') {
+                    iframe.src = "./invoice.html";
+                    title.textContent = "Pembuat Invoice TipTop";
+                    desc.textContent = "Alat bantu khusus mitra dan distributor retail untuk membuat invoice format Microsoft Word (.docx) secara otomatis dari laporan penjualan Excel TipTop Anda.";
+                    
+                    btnInvoice.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
+                    btnShipping.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                } else {
+                    iframe.src = "./shipping_calc.html";
+                    title.textContent = "Kalkulator Pengemasan & Ongkos Kirim";
+                    desc.textContent = "Kalkulator pengepakan kardus otomatis bagi seluruh UMKM untuk menentukan ukuran box terbaik, estimasi berat volumetrik, dan ongkos kirim real-time JNE/POS/TIKI via RajaOngkir.";
+                    
+                    btnShipping.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all shadow bg-brand-red text-white";
+                    btnInvoice.className = "px-6 py-2.5 rounded-full font-bold text-xs md:text-sm transition-all text-gray-600 hover:text-brand-red";
+                }
+            }
+        </script>
     </section>
 
     <!-- TESTIMONIALS SECTION -->

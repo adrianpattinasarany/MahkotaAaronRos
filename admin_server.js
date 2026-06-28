@@ -1,6 +1,60 @@
 const http = require('http');
+const https = require('https');
 const fs = require('fs');
 const path = require('path');
+
+const RAJAONGKIR_KEY = 'omp0ZgIf4281a2c8765a1bd4NvsskRkz';
+
+function requestRajaOngkir(pathUrl, method, data = null) {
+    return new Promise((resolve, reject) => {
+        const isPost = method === 'POST';
+        let postData = '';
+        if (isPost && data) {
+            postData = Object.keys(data).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key])).join('&');
+        }
+
+        const options = {
+            hostname: 'api.rajaongkir.com',
+            path: '/starter' + pathUrl,
+            method: method,
+            headers: {
+                'key': RAJAONGKIR_KEY,
+                'Content-Type': isPost ? 'application/x-www-form-urlencoded' : 'application/json'
+            }
+        };
+
+        if (isPost && postData) {
+            options.headers['Content-Length'] = Buffer.byteLength(postData);
+        }
+
+        const req = https.request(options, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                try {
+                    const parsed = JSON.parse(body);
+                    if (parsed.rajaongkir && parsed.rajaongkir.status && parsed.rajaongkir.status.code === 200) {
+                        resolve(parsed.rajaongkir.results);
+                    } else {
+                        const errMsg = (parsed.rajaongkir && parsed.rajaongkir.status && parsed.rajaongkir.status.description) || 'RajaOngkir error';
+                        reject(new Error(errMsg));
+                    }
+                } catch (e) {
+                    reject(new Error('Invalid JSON response from RajaOngkir'));
+                }
+            });
+        });
+
+        req.on('error', (err) => {
+            reject(err);
+        });
+
+        if (isPost && postData) {
+            req.write(postData);
+        }
+        req.end();
+    });
+}
 
 const PORT = 3000;
 
@@ -159,6 +213,7 @@ const adminHtml = `<!DOCTYPE html>
             <button onclick="switchTab('products')" id="tab-products" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Katalog Produk</button>
             <button onclick="switchTab('media')" id="tab-media" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Galeri Media</button>
             <button onclick="switchTab('invoice')" id="tab-invoice" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Invoice TipTop</button>
+            <button onclick="switchTab('shipping')" id="tab-shipping" class="tab-btn px-6 py-3 font-semibold text-gray-400 hover:text-white transition-all whitespace-nowrap">Kalkulator Shipping</button>
         </div>
         <!-- Notification Banner -->
         <div id="toast" class="fixed top-24 right-6 glass-panel text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 transform translate-y-[-20px] opacity-0 pointer-events-none z-50">
@@ -293,6 +348,11 @@ const adminHtml = `<!DOCTYPE html>
         <!-- INVOICE TAB -->
         <section id="sect-invoice" class="hidden space-y-6">
             <iframe src="/invoice" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
+        </section>
+        
+        <!-- SHIPPING TAB -->
+        <section id="sect-shipping" class="hidden space-y-6">
+            <iframe src="/shipping" class="w-full h-[75vh] border-0 rounded-3xl overflow-hidden glass-panel"></iframe>
         </section>
     </main>
 
@@ -507,6 +567,7 @@ const adminHtml = `<!DOCTYPE html>
             document.getElementById('sect-products').classList.add('hidden');
             document.getElementById('sect-media').classList.add('hidden');
             document.getElementById('sect-invoice').classList.add('hidden');
+            document.getElementById('sect-shipping').classList.add('hidden');
 
             document.getElementById('sect-' + tabId).classList.remove('hidden');
 
@@ -907,6 +968,68 @@ const server = http.createServer((req, res) => {
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('invoice.html not found');
         }
+    } else if (method === 'GET' && (url === '/shipping' || url === '/shipping_calc.html')) {
+        // Serve shipping_calc.html
+        const shippingFile = path.join(__dirname, 'shipping_calc.html');
+        if (fs.existsSync(shippingFile)) {
+            res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+            res.end(fs.readFileSync(shippingFile, 'utf8'));
+        } else {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('shipping_calc.html not found');
+        }
+    } else if (method === 'GET' && url === '/api/shipping/provinces') {
+        // RajaOngkir proxy: get provinces
+        requestRajaOngkir('/province', 'GET')
+            .then(results => {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(results));
+            })
+            .catch(err => {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: err.message }));
+            });
+    } else if (method === 'GET' && url.startsWith('/api/shipping/cities')) {
+        // RajaOngkir proxy: get cities
+        const urlParams = new URL(req.url, `http://${req.headers.host}`);
+        const provinceId = urlParams.searchParams.get('province');
+        const pathStr = provinceId ? `/city?province=${provinceId}` : '/city';
+        requestRajaOngkir(pathStr, 'GET')
+            .then(results => {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(results));
+            })
+            .catch(err => {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: err.message }));
+            });
+    } else if (method === 'POST' && url === '/api/shipping/cost') {
+        // RajaOngkir proxy: post cost calculation
+        let body = '';
+        req.on('data', chunk => body += chunk);
+        req.on('end', () => {
+            try {
+                const payload = JSON.parse(body);
+                const postPayload = {
+                    origin: '444', // Tangerang Selatan
+                    destination: payload.destination,
+                    weight: payload.weight,
+                    courier: payload.courier || 'jne'
+                };
+                requestRajaOngkir('/cost', 'POST', postPayload)
+                    .then(results => {
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify(results));
+                    })
+                    .catch(err => {
+                        res.writeHead(500, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ error: err.message }));
+                    });
+            } catch (err) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: 'Invalid JSON payload' }));
+            }
+        });
     } else if (method === 'GET' && url === '/api/config') {
         // GET configuration json
         try {
